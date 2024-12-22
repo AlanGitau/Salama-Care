@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:signup/loginScreen.dart';
 
-class Signup extends StatelessWidget {
-  const Signup({super.key});
+class Firstpage extends StatelessWidget {
+  const Firstpage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      appBar: AppBar(
-        title: const Text('hello'),
-      ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children:[ 
           Center(
           child: SvgPicture.asset('assets/images/undraw_doctor_kw-5-l.svg',
@@ -52,7 +51,13 @@ class Signup extends StatelessWidget {
 
           const SizedBox(height: 20,),
 
-        ElevatedButton(onPressed:(){}, 
+        ElevatedButton(onPressed:(){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context)=>const Loginscreen())
+          );
+          //navigates to the log in screen
+        }, 
           style:ElevatedButton.styleFrom(
             elevation: 5,
           ),
