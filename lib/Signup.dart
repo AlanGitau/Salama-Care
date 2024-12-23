@@ -25,44 +25,53 @@ class Signup extends StatelessWidget {
 
           const SizedBox(height: 10,),
 
-          TextField(
-                    decoration: InputDecoration(
-                      border:OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ) ,
-                      prefixIcon: const Icon(Icons.person),
-                      labelText: 'username',
-                      //errorText: 'This filed cannot be empty',
-                    ),
-                ),
-
-                const SizedBox(height:15,),
-
-                TextField(
-                    decoration: InputDecoration(
-                      border:OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ) ,
-                      prefixIcon: const Icon(Icons.email),
-                      labelText: 'Email',
-                      //errorText: 'This filed cannot be empty',
-                    ),
-                ),
-
-                const SizedBox(height:15,),
-
-                TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius:BorderRadius.circular(10), 
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+                      decoration: InputDecoration(
+                        border:OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ) ,
+                        prefixIcon: const Icon(Icons.person),
+                        labelText: 'username',
+                        //errorText: 'This filed cannot be empty',
                       ),
-                      prefixIcon: const Icon(Icons.password),
-                      labelText: 'password',
-                    ),
+                  ),
+          ),
+
+                const SizedBox(height:5,),
+
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                      decoration: InputDecoration(
+                        border:OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ) ,
+                        prefixIcon: const Icon(Icons.email),
+                        labelText: 'Email',
+                        //errorText: 'This filed cannot be empty',
+                      ),
+                  ),
                 ),
 
-                const SizedBox(height:15,),
+                const SizedBox(height:5,),
+
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(15), 
+                        ),
+                        prefixIcon: const Icon(Icons.password),
+                        labelText: 'password',
+                      ),
+                  ),
+                ),
+
+                const SizedBox(height:5,),
 
           ElevatedButton(onPressed: (){},//handles the sign up process 
            child:const Text('sign up')
@@ -71,7 +80,9 @@ class Signup extends StatelessWidget {
           Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account?'),
+                    const Text('Already have an account?',style: TextStyle(
+                      fontSize: 15,
+                    ),),
 
                     TextButton(onPressed:(){
                       Navigator.pop(context, 
@@ -79,7 +90,9 @@ class Signup extends StatelessWidget {
                     }, 
                     child:const Text('Login',
                     style: TextStyle(
-                      color: Colors.blue
+                      color: Colors.blue,
+                      fontSize: 15,
+
                     ),
                     ),
                     

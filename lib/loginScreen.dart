@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:signup/Homepage.dart';
 import 'package:signup/signup.dart';
+import 'Homepage.dart';  // if it's directly in the 'lib' directory
+
 
 class Loginscreen extends StatelessWidget {
   const Loginscreen({super.key});
@@ -33,29 +35,35 @@ class Loginscreen extends StatelessWidget {
 
               const SizedBox(height: 10,),
 
-                TextField(
-                    decoration: InputDecoration(
-                      border:OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ) ,
-                      prefixIcon: const Icon(Icons.person),
-                      labelText: 'username',
-                      //errorText: 'This filed cannot be empty',
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                      decoration: InputDecoration(
+                        border:OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ) ,
+                        prefixIcon: const Icon(Icons.person),
+                        labelText: 'username',
+                        //errorText: 'This filed cannot be empty',
+                      ),
+                  ),
                 ),
 
                 const SizedBox(height: 10,),
 
-                TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius:BorderRadius.circular(10), 
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius:BorderRadius.circular(25), 
+                        ),
+                        prefixIcon: const Icon(Icons.password),
+                        labelText: 'password',
+                        //errorText: 'This filed cannot be empty',
                       ),
-                      prefixIcon: const Icon(Icons.password),
-                      labelText: 'password',
-                      //errorText: 'This filed cannot be empty',
-                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 15,),

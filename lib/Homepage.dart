@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'constants/categories.dart';
+//import 'constants/categories.dart';
+
+
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -17,12 +21,14 @@ class Homepage extends StatelessWidget {
                   children: [
                     Text('Hello',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
                     ),
                     ),
                     Text('Welcome back',
                     style:TextStyle(
                       fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                     ),
                   ],
@@ -31,6 +37,8 @@ class Homepage extends StatelessWidget {
                 Icon(Icons.person_2),
               ],
             ),
+
+            //search bar
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Container(
@@ -47,6 +55,41 @@ class Homepage extends StatelessWidget {
                  ),
                 ),
               ),
+            ),
+
+            const Text('Our services',style: TextStyle(
+              fontSize: 18,
+            ),),
+            const SizedBox(height: 5,),
+
+            //horizontal listview
+            Container(
+              height: 80,
+              //color: Colors.black,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: const [
+                     CategoryCard(
+                      categoryName: 'general',
+                      iconImage: 'assets/Icons/health.png',
+                     ),
+
+                      CategoryCard(
+                      categoryName: 'Dentist',
+                      iconImage: 'assets/Icons/dental-care.png',
+                     ),
+
+                      CategoryCard(
+                      categoryName: 'Dermatologist',
+                      iconImage: 'assets/Icons/dermatology.png',
+                     ),
+
+
+
+
+                ],
+              ),
+
             )
           ],
         ) 
