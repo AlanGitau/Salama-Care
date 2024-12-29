@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:signup/Homepage.dart';
 import 'package:signup/signup.dart';
-import 'Homepage.dart';  // if it's directly in the 'lib' directory
+// if it's directly in the 'lib' directory
 
 
 class Loginscreen extends StatelessWidget {
