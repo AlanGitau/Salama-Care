@@ -32,7 +32,7 @@ class Doctorcard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 100,
+        //height: 100,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.deepPurple[100],

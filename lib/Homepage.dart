@@ -1,12 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:signup/constants/doctors.dart';
+import 'ProfileScreen.dart';
+import 'appointmentsScreen.dart';
 import 'constants/categories.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 //import 'constants/categories.dart';
 
-
-
-class Homepage extends StatelessWidget {
+//handle the bottom navigation ba
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  int _selectedIndex = 0;
+
+  
+  final List<Widget> pages = const [
+    HomeScreen(), 
+    Appointmentsscreen(),
+    Profilescreen(),
+  ];
+
+  void ontapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: pages[_selectedIndex], // Dynamically display the selected screen
+      ),
+      bottomNavigationBar: GNav(
+        selectedIndex: _selectedIndex,
+        onTabChange: ontapped, // Correctly pass the function reference
+        tabBorderRadius: 25,
+        gap: 10,
+        tabBackgroundColor: Colors.purple.shade100.withOpacity(0.5),
+        tabs: const [
+          GButton(
+            icon: Icons.home,
+            text: 'Home',
+          ),
+          GButton(
+            icon: Icons.calendar_month,
+            text: 'Appointments',
+          ),
+          GButton(
+            icon: Icons.person,
+            text: 'Profile',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+//Home screen
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -185,14 +251,13 @@ class Homepage extends StatelessWidget {
                    speciality: 'General doctor',
                  ),
              
-             
-             
-             
-             
                ]
                
              ),
-           ) 
+           ), 
+
+           //bottom navigation bar
+                 
           ]
         ),
       )
