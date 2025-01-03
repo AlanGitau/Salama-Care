@@ -1,12 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:signup/BookAppointmentPage.dart';
+
+//import 'BookAppointmentPage.dart';
 
 class Appointmentsscreen extends StatelessWidget {
   const Appointmentsscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,//number of tabs
+      child: Scaffold(
+        appBar: AppBar(
+         title: const Text('Appointments'),
+         leading: IconButton(
+          onPressed:(){
+            Navigator.pop(context);
+          }, 
+          icon: const Icon(Icons.arrow_back)),
+         bottom: const TabBar(
+          tabs: [
+            Tab(text: 'upcoming',),
+            Tab(text: 'past',)
+          ]
+          ),
+        ),
+      
+        body:TabBarView(
+          children: const [
+            UpcomingAppointments(),
+            PastAppointments(),
+          ]),
+
+          floatingActionButton: FloatingActionButton(
+            onPressed: (){
+              //navigates to the booking page
+              Navigator.push(
+                context,
+                 MaterialPageRoute(builder: (context)=> BookAppointmentPage())
+                 );
+            },
+            child: Icon(Icons.add),
+            tooltip: 'book an appointment',
+            ),
+      ),
+    );
+  }
+}
+
+class UpcomingAppointments extends StatelessWidget {
+  const UpcomingAppointments({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(
-      body: Text('Appointments screen'),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('upcoming appointments'),
+        ],
+      ),
+    );
+  }
+}
+
+class PastAppointments extends StatelessWidget {
+  const PastAppointments({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body:Column(
+        children: [
+          Text('past appointments'),
+        ],
+      ),
     );
   }
 }
