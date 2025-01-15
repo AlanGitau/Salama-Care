@@ -26,8 +26,8 @@ class Appointmentsscreen extends StatelessWidget {
           ),
         ),
       
-        body:TabBarView(
-          children: const [
+        body:const TabBarView(
+          children: [
             UpcomingAppointments(),
             PastAppointments(),
           ]),
@@ -37,11 +37,11 @@ class Appointmentsscreen extends StatelessWidget {
               //navigates to the booking page
               Navigator.push(
                 context,
-                 MaterialPageRoute(builder: (context)=> BookAppointmentPage())
+                 MaterialPageRoute(builder: (context)=> const BookAppointmentPage())
                  );
             },
-            child: Icon(Icons.add),
             tooltip: 'book an appointment',
+            child: Icon(Icons.add),
             ),
       ),
     );

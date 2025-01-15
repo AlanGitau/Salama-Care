@@ -18,13 +18,13 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Book Appointment")),
+      appBar: AppBar(title: const Text("Book Appointment")),
       body: Padding(
         padding: const EdgeInsets.all(28.0),
         child: Column(
           children: [
-            Text('select doctor'),
-            Divider(),
+            const Text('select doctor'),
+            const Divider(),
             // Dropdown for selecting a doctor
             DropdownButtonFormField<String>(
               value: selectedDoctor,
@@ -39,18 +39,18 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   selectedDoctor = value;
                 });
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Select Doctor",
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            Divider(),
-            Text('step 2 : choose date'),
+            const Divider(),
+            const Text('step 2 : choose date'),
             // Date picker for appointment date
             ListTile(
-              leading: Icon(Icons.calendar_today),
+              leading: const Icon(Icons.calendar_today),
               title: Text(selectedDate == null// is a date is not selected it displays select date
                   ? "Select Date"
                   : "${selectedDate!.toLocal()}".split(' ')[0]),//if a date is selected it formats it and displays it
@@ -70,11 +70,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               },
             ),
 
-            Divider(),
-            Text('step 3 :Pick time'),
+            const Divider(),
+            const Text('step 3 :Pick time'),
             // Time picker for appointment time
             ListTile(
-              leading: Icon(Icons.access_time),
+              leading: const Icon(Icons.access_time),
               title: Text(selectedTime == null
                   ? "Select Time"
                   : "${selectedTime!.hour}:${selectedTime!.minute}"),
@@ -93,7 +93,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
 
            // const Spacer(),
 
-           SizedBox(height: 10,),
+           const SizedBox(height: 10,),
 
             //cornfirm button
             ElevatedButton(
@@ -106,11 +106,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   Navigator.pop(context); // Return to previous page
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please fill all fields")),
+                    const SnackBar(content: Text("Please fill all fields")),
                   );
                 }
               },
-              child: Text("Confirm Appointment"),
+              child: const Text("Confirm Appointment"),
             ),
           ],
         ),
