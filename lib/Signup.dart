@@ -135,10 +135,6 @@ class _SignupState extends State<Signup> {
             child: const Text('sign up'),
             ),    
         
-            /*ElevatedButton(onPressed: (){},//handles the sign up process 
-             child:const Text('sign up')
-             ),*/
-        
             Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

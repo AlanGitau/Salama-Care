@@ -2,11 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:signup/Homepage.dart';
 import 'package:signup/signup.dart';
-// if it's directly in the 'lib' directory
+import 'package:signup/Services/auth_service.dart';
 
 
-class Loginscreen extends StatelessWidget {
+class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
+
+  @override
+  State<Loginscreen> createState() => _LoginscreenState();
+}
+
+class _LoginscreenState extends State<Loginscreen> {
+
+  final _emailcontroller = TextEditingController();
+  final _passwordcontroller = TextEditingController();
+  final _authservice = AuthService();
+   bool _isloading  = false;
+  
+  Future<void> _handleslogin()async{
+    setState(() {
+      _isloading = true;
+    });
+
+  //Get result from firebase authentication
+    final result  = await _authservice.login(
+      email: _emailcontroller.text.trim(),
+      password: _passwordcontroller.text,
+      );
+
+      setState(() {
+      _isloading = false;
+    });
+
+    if (!mounted) return;
+
+    if (result == 'Success') {  // Note: 'Success' with capital S to match AuthService
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Logged in successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+       Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Homepage()),  // Navigate to Homepage
+      );
+       } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result ?? 'An error occurred'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +89,14 @@ class Loginscreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: _emailcontroller,
+                    keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         border:OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                         ) ,
-                        prefixIcon: const Icon(Icons.person),
-                        labelText: 'username',
-                        //errorText: 'This filed cannot be empty',
+                        prefixIcon: const Icon(Icons.mail),
+                        labelText: 'Email',
                       ),
                   ),
                 ),
@@ -54,6 +106,7 @@ class Loginscreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: _passwordcontroller,
                       obscureText: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -67,16 +120,13 @@ class Loginscreen extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 15,),
-
-                ElevatedButton(
-                  onPressed: (){
-                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>const Homepage())
-                     );
-                  }, 
-                  child:const Text('Login')
-                  ),
+//login button
+               _isloading 
+          ? const CircularProgressIndicator()
+          : ElevatedButton(
+              onPressed: _handleslogin,
+              child: const Text('Login')
+            ),
 
                 const SizedBox(height: 20,),
 

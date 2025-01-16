@@ -41,7 +41,7 @@ class Appointmentsscreen extends StatelessWidget {
                  );
             },
             tooltip: 'book an appointment',
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
             ),
       ),
     );
