@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:signup/DoctorDashboard.dart';
 import 'package:signup/Homepage.dart';
 import 'package:signup/signup.dart';
 import 'package:signup/Services/auth_service.dart';
@@ -46,7 +47,7 @@ class _LoginscreenState extends State<Loginscreen> {
 
        Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Homepage()),  // Navigate to Homepage
+        MaterialPageRoute(builder: (context) => const DoctorDashboard()),  // Navigate to Homepage
       );
        } else {
       ScaffoldMessenger.of(context).showSnackBar(
