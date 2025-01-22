@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:signup/DoctorDashboard.dart';
@@ -37,6 +39,13 @@ class _LoginscreenState extends State<Loginscreen> {
 
     if (!mounted) return;
 
+     /*ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Logged in successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      ); */
+
     if (result == 'Success') {  // Note: 'Success' with capital S to match AuthService
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -45,7 +54,7 @@ class _LoginscreenState extends State<Loginscreen> {
         ),
       );
 
-       Navigator.pushReplacement(
+      /* Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const DoctorDashboard()),  // Navigate to Homepage
       );
@@ -56,6 +65,42 @@ class _LoginscreenState extends State<Loginscreen> {
           backgroundColor: Colors.red,
         ),
       );
+    }  */
+
+
+    //fetch users id from firestore
+    final userid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userid != null){
+      //fetch users role
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(userid).get();
+
+      if(userDoc.exists){
+        final userRole = userDoc['role'];
+
+        //navigate to appropriate screen
+        if (userRole == 'patient'){
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(builder:(context)=> const Homepage()),
+            );
+        }else if (userRole == 'doctor'){
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(builder:(context)=> const DoctorDashboard()),
+            );
+        } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result ?? 'An error occurred'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }  
+
+        }
+        
+      }
     }
   }
   
