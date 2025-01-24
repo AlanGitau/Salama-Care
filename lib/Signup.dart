@@ -44,7 +44,7 @@ class _SignupState extends State<Signup> {
         password: _passwordcontroller.text,
       );
 
-      if (result == 'success') {
+      if (result == 'Success') {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           // Save user data in Firestore
@@ -89,6 +89,8 @@ class _SignupState extends State<Signup> {
         _isloading = false;
       });
     }
+
+    
   }
 
   @override

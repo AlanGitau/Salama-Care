@@ -102,6 +102,7 @@ class _LoginscreenState extends State<Loginscreen> {
         
       }
     }
+    print('User UID: ${FirebaseAuth.instance.currentUser?.uid}');
   }
   
 
