@@ -77,13 +77,37 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:                 Drawer(
+                child: ListView(
+                  children: const [
+                    DrawerHeader(
+                      child: Text('menu')
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.settings),
+                         title: Text('settings')
+                      ),
+                       ListTile(
+                           leading: Icon(Icons.question_mark_rounded),
+                           title: Text('FAQ'),
+                       ),
+
+                     ListTile(
+                           leading: Icon(Icons.logout),
+                           title: Text('log out',
+                                  style: TextStyle(color: Colors.red),
+                              ),
+                          )
+                  ],
+                ),
+               ),
       body: SafeArea(
         child:Column(
           children: [
-             const Row(
+             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(9.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +128,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                //adding the profile icon
-                Icon(Icons.person_2),
+
+                Builder(
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: (){
+                         Scaffold.of(context).openDrawer();
+                      },
+                      child: const Icon(Icons.person_2)
+                      );
+                  }
+                ),
+
+
               ],
             ),
 
