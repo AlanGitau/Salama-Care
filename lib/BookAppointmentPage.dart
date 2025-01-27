@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class BookAppointmentPage extends StatefulWidget {
@@ -51,9 +54,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             // Date picker for appointment date
             ListTile(
               leading: const Icon(Icons.calendar_today),
-              title: Text(selectedDate == null// is a date is not selected it displays select date
+              title: Text(selectedDate ==
+                      null // is a date is not selected it displays select date
                   ? "Select Date"
-                  : "${selectedDate!.toLocal()}".split(' ')[0]),//if a date is selected it formats it and displays it
+                  : "${selectedDate!.toLocal()}".split(' ')[
+                      0]), //if a date is selected it formats it and displays it
               //opens the date picker when tapped
               onTap: () async {
                 DateTime? date = await showDatePicker(
@@ -91,19 +96,50 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               },
             ),
 
-           // const Spacer(),
+            // const Spacer(),
 
-           const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
 
             //cornfirm button
             ElevatedButton(
-              onPressed: () {
-                // Validate inputs and book the appointment (backend to be added later)
+              onPressed: () async {
+                // Validate inputs and book the appointment
                 if (selectedDoctor != null &&
                     selectedDate != null &&
                     selectedTime != null) {
-                  print("Appointment Booked: $selectedDoctor, $selectedDate, $selectedTime");
-                  Navigator.pop(context); // Return to previous page
+                  try {
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user != null) {
+                      await FirebaseFirestore.instance
+                          .collection('appointments')
+                          .add({
+                        'userId': user.uid,
+                        'doctorName': selectedDoctor,
+                        'appointmentDate': selectedDate,
+                        'appointmentTime':
+                            '${selectedTime!.hour}:${selectedTime!.minute}',
+                        'createdAt': FieldValue.serverTimestamp(),
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Appointment booked successfully"),
+                            backgroundColor:Colors.green,
+                            ),
+                            
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please login first")),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error booking appointment: $e")),
+                    );
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Please fill all fields")),

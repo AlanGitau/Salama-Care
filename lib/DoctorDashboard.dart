@@ -1,18 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:signup/loginScreen.dart';
 
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+        drawer:Drawer(
+                child: ListView(
+                  children: [
+                    const DrawerHeader(
+                      child: Text('menu')
+                      ),
+                      const ListTile(
+                        leading: Icon(Icons.settings),
+                         title: Text('settings')
+                      ),
+                       const ListTile(
+                           leading: Icon(Icons.question_mark_rounded),
+                           title: Text('FAQ'),
+                       ),
+//log out button
+                     ListTile(
+                           leading: const Icon(Icons.logout),
+                           title: const Text('log out',
+                                  style: TextStyle(color: Colors.red),
+                              ),
+                           onTap: () {
+                             Navigator.pushReplacement(
+                              context,
+                               MaterialPageRoute(builder: (context) => const Loginscreen()),
+                              );
+                           },
+                          )
+                  ],
+                ),
+               ),
       body: SafeArea(
         child:Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(9.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +64,16 @@ class DoctorDashboard extends StatelessWidget {
                   ),
                 ),
                //adding the profile icon
-                Icon(Icons.person_2),
+                Builder(
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: const Icon(Icons.person_2)
+                      );
+                  }
+                ),
               ],
             ),
                 // statistics section
@@ -42,7 +82,7 @@ class DoctorDashboard extends StatelessWidget {
             ),),
 
                 // upcoming appointments
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Upcoming appointments',style: TextStyle(

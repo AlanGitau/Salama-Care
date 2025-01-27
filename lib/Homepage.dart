@@ -4,6 +4,7 @@ import 'ProfileScreen.dart';
 import 'appointmentsScreen.dart';
 import 'constants/categories.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:signup/loginScreen.dart';
 //import 'constants/categories.dart';
 
 //handle the bottom navigation ba
@@ -77,26 +78,32 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer:                 Drawer(
+      drawer:Drawer(
                 child: ListView(
-                  children: const [
-                    DrawerHeader(
+                  children: [
+                    const DrawerHeader(
                       child: Text('menu')
                       ),
-                      ListTile(
+                      const ListTile(
                         leading: Icon(Icons.settings),
                          title: Text('settings')
                       ),
-                       ListTile(
+                       const ListTile(
                            leading: Icon(Icons.question_mark_rounded),
                            title: Text('FAQ'),
                        ),
-
+//log out button
                      ListTile(
-                           leading: Icon(Icons.logout),
-                           title: Text('log out',
+                           leading: const Icon(Icons.logout),
+                           title: const Text('log out',
                                   style: TextStyle(color: Colors.red),
                               ),
+                           onTap: () {
+                             Navigator.pushReplacement(
+                              context,
+                               MaterialPageRoute(builder: (context) => const Loginscreen()),
+                              );
+                           },
                           )
                   ],
                 ),

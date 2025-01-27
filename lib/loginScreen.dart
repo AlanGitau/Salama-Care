@@ -22,31 +22,24 @@ class _LoginscreenState extends State<Loginscreen> {
   final _authservice = AuthService();
    bool _isloading  = false;
   
-  Future<void> _handleslogin()async{
-    setState(() {
-      _isloading = true;
-    });
+ Future<void> _handleslogin() async {
+  setState(() {
+    _isloading = true;
+  });
 
-  //Get result from firebase authentication
-    final result  = await _authservice.login(
+  try {
+    final result = await _authservice.login(
       email: _emailcontroller.text.trim(),
       password: _passwordcontroller.text,
-      );
+    );
 
-      setState(() {
+    setState(() {
       _isloading = false;
     });
 
     if (!mounted) return;
 
-     /*ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Logged in successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      ); */
-
-    if (result == 'Success') {  // Note: 'Success' with capital S to match AuthService
+    if (result == 'Success') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Logged in successfully!'),
@@ -54,55 +47,76 @@ class _LoginscreenState extends State<Loginscreen> {
         ),
       );
 
-      /* Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DoctorDashboard()),  // Navigate to Homepage
-      );
-       } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result ?? 'An error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }  */
+      final userid = FirebaseAuth.instance.currentUser?.uid;
 
+      if (userid != null) {
+        final userDoc = await FirebaseFirestore.instance.collection('users').doc(userid).get();
 
-    //fetch users id from firestore
-    final userid = FirebaseAuth.instance.currentUser?.uid;
+        if (userDoc.exists) {
+          final userRole = userDoc['role'];
 
-    if (userid != null){
-      //fetch users role
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(userid).get();
-
-      if(userDoc.exists){
-        final userRole = userDoc['role'];
-
-        //navigate to appropriate screen
-        if (userRole == 'patient'){
-          Navigator.pushReplacement(
-            context, 
-            MaterialPageRoute(builder:(context)=> const Homepage()),
+          if (userRole == 'patient') {
+            Navigator.pushReplacement(
+              context, 
+              MaterialPageRoute(builder: (context) => const Homepage()),
             );
-        }else if (userRole == 'doctor'){
-          Navigator.pushReplacement(
-            context, 
-            MaterialPageRoute(builder:(context)=> const DoctorDashboard()),
+          } else if (userRole == 'doctor') {
+            Navigator.pushReplacement(
+              context, 
+              MaterialPageRoute(builder: (context) => const DoctorDashboard()),
             );
-        } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result ?? 'An error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }  
-
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Unknown user role'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         }
-        
       }
+    } else if (result == 'wrong-password') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Incorrect password. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (result == 'user-not-found') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No user found with this email.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (result == 'invalid-email') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email format.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result ?? 'Authentication failed'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
+  } catch (e) {
+    setState(() {
+      _isloading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Login error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
   
 
   @override
