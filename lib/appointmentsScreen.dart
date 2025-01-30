@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:signup/BookAppointmentPage.dart';
 
 //import 'BookAppointmentPage.dart';
@@ -90,10 +91,10 @@ class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
            return ListView.builder(
             itemCount: appointments.length,
             itemBuilder: (context, index) {
-              final appointment = appointments[index].data() as Map<String, dynamic>;
+              final appointment = appointments[index].data();
               return ListTile(
                 title: Text(appointment['doctorName'] ?? ''),
-                subtitle: Text('${appointment['appointmentDate'].toDate()}, ${appointment['appointmentTime']}'),
+                subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
               );
             },
           );
