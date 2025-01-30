@@ -85,7 +85,7 @@ class DoctorDashboard extends StatelessWidget {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Upcoming appointments',style: TextStyle(
+                  Text('Upcoming appointments',style: TextStyle(
                   fontSize: 18,
                   ),),
 

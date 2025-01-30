@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class BookAppointmentPage extends StatefulWidget {
@@ -14,9 +13,40 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   String? selectedDoctor;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  List<Map<String, dynamic>> doctors = [];
+  bool isLoading = true;
 
-  // Dummy list of doctors
-  final List<String> doctors = ["Dr. Smith", "Dr. Jane Doe", "Dr. Ahmed"];
+  @override
+  void initState() {
+    super.initState();
+    fetchDoctors();
+  }
+
+  Future<void> fetchDoctors() async {
+    try {
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'doctor')
+          .get();
+
+      setState(() {
+        doctors = querySnapshot.docs
+            .map((doc) => {
+                  'id': doc.id,
+                  'name': doc['username'],
+                })
+            .toList();
+        isLoading = false;
+      });
+
+      print('Fetched doctors: $doctors');
+    } catch (e) {
+      print('Error fetching doctors: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,40 +56,41 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
         padding: const EdgeInsets.all(28.0),
         child: Column(
           children: [
-            const Text('select doctor'),
+            const Text('Select Doctor'),
             const Divider(),
-            // Dropdown for selecting a doctor
-            DropdownButtonFormField<String>(
-              value: selectedDoctor,
-              items: doctors
-                  .map((doctor) => DropdownMenuItem(
-                        value: doctor,
-                        child: Text(doctor),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedDoctor = value;
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: "Select Doctor",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
 
+            // Dropdown for selecting a doctor
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : DropdownButtonFormField<String>(
+                    value: selectedDoctor,
+                    items: doctors.map((doctor) {
+                      return DropdownMenuItem<String>(
+                        value: doctor['id'],
+                        child: Text(doctor['name']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDoctor = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Select Doctor",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+            const SizedBox(height: 16),
             const Divider(),
-            const Text('step 2 : choose date'),
+            const Text('Step 2: Choose Date'),
+
             // Date picker for appointment date
             ListTile(
               leading: const Icon(Icons.calendar_today),
-              title: Text(selectedDate ==
-                      null // is a date is not selected it displays select date
+              title: Text(selectedDate == null
                   ? "Select Date"
-                  : "${selectedDate!.toLocal()}".split(' ')[
-                      0]), //if a date is selected it formats it and displays it
-              //opens the date picker when tapped
+                  : "${selectedDate!.toLocal()}".split(' ')[0]),
               onTap: () async {
                 DateTime? date = await showDatePicker(
                   context: context,
@@ -76,7 +107,8 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
             ),
 
             const Divider(),
-            const Text('step 3 :Pick time'),
+            const Text('Step 3: Pick Time'),
+
             // Time picker for appointment time
             ListTile(
               leading: const Icon(Icons.access_time),
@@ -96,16 +128,11 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
               },
             ),
 
-            // const Spacer(),
+            const SizedBox(height: 10),
 
-            const SizedBox(
-              height: 10,
-            ),
-
-            //cornfirm button
+            // Confirm button
             ElevatedButton(
               onPressed: () async {
-                // Validate inputs and book the appointment
                 if (selectedDoctor != null &&
                     selectedDate != null &&
                     selectedTime != null) {
@@ -116,7 +143,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                           .collection('appointments')
                           .add({
                         'userId': user.uid,
-                        'doctorName': selectedDoctor,
+                        'doctorId': selectedDoctor,
                         'appointmentDate': selectedDate,
                         'appointmentTime':
                             '${selectedTime!.hour}:${selectedTime!.minute}',
@@ -124,10 +151,9 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text("Appointment booked successfully"),
-                            backgroundColor:Colors.green,
-                            ),
-                            
+                          content: Text("Appointment booked successfully"),
+                          backgroundColor: Colors.green,
+                        ),
                       );
                       Navigator.pop(context);
                     } else {

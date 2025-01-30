@@ -60,13 +60,14 @@ class UpcomingAppointments extends StatefulWidget {
 
 class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
 
-  final user = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;//It retrieves the currently authenticated user from Firebase Authentication and stores details about the authenticated user
   
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
+        //querys the database
         stream: FirebaseFirestore.instance
             .collection('appointments')
             .where('userId', isEqualTo: user?.uid)
@@ -82,7 +83,7 @@ class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
             return const Center(child: CircularProgressIndicator(),);
           }
 
-          final appointments = Snapshot.data?.docs ?? [];
+          final appointments = Snapshot.data?.docs ?? []; //If Snapshot.data is null, appointments will default to an empty list ([]).
 
           if (appointments.isEmpty){
             return const Center(child: Text('No upcoming appointments'),);

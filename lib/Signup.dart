@@ -15,7 +15,10 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   String? _selectedRole;
   final List<String> roles = ['patient', 'doctor'];
-
+  
+  // Additional controllers for doctor details
+  final _specializationController = TextEditingController();
+  final _experienceController = TextEditingController();
   final _usernamecontroller = TextEditingController();
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
@@ -33,12 +36,25 @@ class _SignupState extends State<Signup> {
       return;
     }
 
+    // Validate doctor-specific fields
+    if (_selectedRole == 'doctor') {
+      if (_specializationController.text.isEmpty || 
+          _experienceController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fill all doctor details!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }
+
     setState(() {
       _isloading = true;
     });
 
     try {
-      // Perform registration
       final result = await _authservice.registration(
         email: _emailcontroller.text.trim(),
         password: _passwordcontroller.text,
@@ -47,12 +63,29 @@ class _SignupState extends State<Signup> {
       if (result == 'Success') {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
-          // Save user data in Firestore
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          // Create base user data
+          final userData = {
             'email': _emailcontroller.text.trim(),
             'username': _usernamecontroller.text.trim(),
             'role': _selectedRole,
-          });
+          };
+
+          // Add doctor-specific fields if role is doctor
+          if (_selectedRole == 'doctor') {
+            userData.addAll({
+              'specialization': _specializationController.text.trim(),
+              'experience': _experienceController.text.trim(),
+              //'isAvailable': true, // Default availability status
+              //'rating': 0.0, // Initial rating
+             // 'totalRatings': 0, // Number of ratings received
+            });
+          }
+
+          // Save user data in Firestore
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set(userData);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -61,13 +94,10 @@ class _SignupState extends State<Signup> {
             ),
           );
 
-          // Navigate to login screen
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Loginscreen()),
           );
-        } else {
-          throw Exception('Failed to retrieve user ID.');
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,8 +119,6 @@ class _SignupState extends State<Signup> {
         _isloading = false;
       });
     }
-
-    
   }
 
   @override
@@ -114,7 +142,7 @@ class _SignupState extends State<Signup> {
             ),
             const SizedBox(height: 10),
 
-            // Roles
+            // Roles dropdown (your existing code)
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: DropdownButtonFormField<String>(
@@ -141,9 +169,8 @@ class _SignupState extends State<Signup> {
                 isExpanded: true,
               ),
             ),
-            const SizedBox(height: 5),
 
-            // Username
+            // Basic fields
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
@@ -157,9 +184,7 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
 
-            // Email
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
@@ -174,9 +199,7 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
 
-            // Password
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
@@ -191,7 +214,38 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+
+            // Doctor-specific fields
+            if (_selectedRole == 'doctor') ...[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _specializationController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    prefixIcon: const Icon(Icons.medical_services),
+                    labelText: 'Specialization',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _experienceController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    prefixIcon: const Icon(Icons.work),
+                    labelText: 'Years of Experience',
+                    hintText: 'e.g., 5',
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
 
             // Signup Button
             _isloading
@@ -200,6 +254,7 @@ class _SignupState extends State<Signup> {
                     onPressed: _handlesignup,
                     child: const Text('Sign Up'),
                   ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
