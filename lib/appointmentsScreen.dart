@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signup/BookAppointmentPage.dart';
 
@@ -48,18 +50,60 @@ class Appointmentsscreen extends StatelessWidget {
   }
 }
 
-class UpcomingAppointments extends StatelessWidget {
+class UpcomingAppointments extends StatefulWidget {
   const UpcomingAppointments({super.key});
 
   @override
+  State<UpcomingAppointments> createState() => _UpcomingAppointmentsState();
+}
+
+class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
+
+  final user = FirebaseAuth.instance.currentUser;
+  
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('upcoming appointments'),
-        ],
-      ),
+    return Scaffold(
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('appointments')
+            .where('userId', isEqualTo: user?.uid)
+            .where('appointmentDate', isGreaterThanOrEqualTo: DateTime.now())
+            .orderBy('appointmentDate')
+            .snapshots(), 
+        builder: (context , Snapshot){
+          if(Snapshot.hasError){
+            return Center(child: Text('Error:${Snapshot.error}'));
+          }
+
+          if (Snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+
+          final appointments = Snapshot.data?.docs ?? [];
+
+          if (appointments.isEmpty){
+            return const Center(child: Text('No upcoming appointments'),);
+          }
+
+           return ListView.builder(
+            itemCount: appointments.length,
+            itemBuilder: (context, index) {
+              final appointment = appointments[index].data() as Map<String, dynamic>;
+              return ListTile(
+                title: Text(appointment['doctorName'] ?? ''),
+                subtitle: Text('${appointment['appointmentDate'].toDate()}, ${appointment['appointmentTime']}'),
+              );
+            },
+          );
+
+
+
+          
+        }
+        ),
+    
     );
   }
 }
