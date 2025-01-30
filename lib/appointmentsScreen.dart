@@ -109,17 +109,55 @@ class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
   }
 }
 
-class PastAppointments extends StatelessWidget {
+class PastAppointments extends StatefulWidget {
   const PastAppointments({super.key});
 
   @override
+  State<PastAppointments> createState() => _PastAppointmentsState();
+}
+
+class _PastAppointmentsState extends State<PastAppointments> {
+
+  final user = FirebaseAuth.instance.currentUser;
+  
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body:Column(
-        children: [
-          Text('past appointments'),
-        ],
+    return Scaffold(
+      body:StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('appointments')
+            .where('userId', isEqualTo: user?.uid)
+            .where('appointmentDate', isLessThan: DateTime.now())
+            .orderBy('appointmentDate')
+            .snapshots(), 
+        builder: (context , Snapshot){
+          if(Snapshot.hasError){
+            return Center(child: Text('Error:${Snapshot.error}'));
+          }
+
+          if (Snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+
+          final appointments = Snapshot.data?.docs ?? [];
+
+          if (appointments.isEmpty){
+            return const Center(child: Text('No upcoming appointments'),);
+          }
+
+           return ListView.builder(
+            itemCount: appointments.length,
+            itemBuilder: (context, index) {
+              final appointment = appointments[index].data();
+              return ListTile(
+                title: Text(appointment['doctorName'] ?? ''),
+                subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
+              );
+            },
+          );
+        }
       ),
-    );
+      );
   }
+  
 }
