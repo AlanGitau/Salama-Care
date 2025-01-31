@@ -93,21 +93,43 @@ class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
             itemCount: appointments.length,
             itemBuilder: (context, index) {
               final appointment = appointments[index].data();
-              return ListTile(
-                title: Text(appointment['doctorName'] ?? ''),
-                subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
-              );
+              final doctorId = appointment['doctorId'];
+
+              return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('users').doc(doctorId).get(),
+      builder: (context, doctorSnapshot) {
+        if (doctorSnapshot.connectionState == ConnectionState.waiting) {
+          return const ListTile(
+            title: Text('Loading doctor info...'),
+            subtitle: Text('Fetching details...'),
+          );
+        }
+
+        if (!doctorSnapshot.hasData || doctorSnapshot.data == null) {
+          return const ListTile(
+            title: Text('Doctor not found'),
+          );
+        }
+
+        final doctorData = doctorSnapshot.data!.data() as Map<String, dynamic>?;
+
+        return ListTile(
+          title: Text(doctorData?['username'] ?? 'Unknown Doctor'),
+          subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
+         );
             },
           );
 
 
 
           
-        }
-        ),
+        },
+        );
     
-    );
-  }
+        },
+      ));
+    
+ }
 }
 
 class PastAppointments extends StatefulWidget {
