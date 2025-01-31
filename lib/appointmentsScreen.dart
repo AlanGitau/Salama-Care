@@ -93,27 +93,33 @@ class _UpcomingAppointmentsState extends State<UpcomingAppointments> {
             itemCount: appointments.length,
             itemBuilder: (context, index) {
               final appointment = appointments[index].data();
-              final doctorId = appointment['doctorId'];
+              final doctorId = appointment['doctorId'];//The doctorId is retrieved from the appointment map:
 
               return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance.collection('users').doc(doctorId).get(),
+                //The FutureBuilder is used to handle the asynchronous Firestore query.
+                //It waits for the get() method to complete and then builds the UI based on the result.
+
+      future: FirebaseFirestore.instance.collection('users').doc(doctorId).get(),//The code queries Firestore to fetch the doctor's details using the doctorId:
       builder: (context, doctorSnapshot) {
+        //While the data is being fetched, a loading message is displayed.
         if (doctorSnapshot.connectionState == ConnectionState.waiting) {
           return const ListTile(
             title: Text('Loading doctor info...'),
             subtitle: Text('Fetching details...'),
           );
         }
-
+        //If the document doesn't exist or there's an error, a "Doctor not found" message is displayed.
         if (!doctorSnapshot.hasData || doctorSnapshot.data == null) {
           return const ListTile(
             title: Text('Doctor not found'),
           );
         }
+        //If the document is found, its data is extracted as a Map<String, dynamic>.
 
         final doctorData = doctorSnapshot.data!.data() as Map<String, dynamic>?;
 
         return ListTile(
+          //The doctor's username is accessed from the doctorData map
           title: Text(doctorData?['username'] ?? 'Unknown Doctor'),
           subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
          );
@@ -146,7 +152,8 @@ class _PastAppointmentsState extends State<PastAppointments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:StreamBuilder(
+      body: StreamBuilder(
+        //querys the database
         stream: FirebaseFirestore.instance
             .collection('appointments')
             .where('userId', isEqualTo: user?.uid)
@@ -162,25 +169,57 @@ class _PastAppointmentsState extends State<PastAppointments> {
             return const Center(child: CircularProgressIndicator(),);
           }
 
-          final appointments = Snapshot.data?.docs ?? [];
+          final appointments = Snapshot.data?.docs ?? []; //If Snapshot.data is null, appointments will default to an empty list ([]).
 
           if (appointments.isEmpty){
-            return const Center(child: Text('No upcoming appointments'),);
+            return const Center(child: Text('No  appointments'),);
           }
 
            return ListView.builder(
             itemCount: appointments.length,
             itemBuilder: (context, index) {
               final appointment = appointments[index].data();
-              return ListTile(
-                title: Text(appointment['doctorName'] ?? ''),
-                subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
-              );
-            },
+              final doctorId = appointment['doctorId'];//The doctorId is retrieved from the appointment map:
+
+              return FutureBuilder<DocumentSnapshot>(
+                //The FutureBuilder is used to handle the asynchronous Firestore query.
+                //It waits for the get() method to complete and then builds the UI based on the result.
+
+      future: FirebaseFirestore.instance.collection('users').doc(doctorId).get(),//The code queries Firestore to fetch the doctor's details using the doctorId:
+      builder: (context, doctorSnapshot) {
+        //While the data is being fetched, a loading message is displayed.
+        if (doctorSnapshot.connectionState == ConnectionState.waiting) {
+          return const ListTile(
+            title: Text('Loading doctor info...'),
+            subtitle: Text('Fetching details...'),
           );
         }
-      ),
-      );
+        //If the document doesn't exist or there's an error, a "Doctor not found" message is displayed.
+        if (!doctorSnapshot.hasData || doctorSnapshot.data == null) {
+          return const ListTile(
+            title: Text('Doctor not found'),
+          );
+        }
+        //If the document is found, its data is extracted as a Map<String, dynamic>.
+
+        final doctorData = doctorSnapshot.data!.data() as Map<String, dynamic>?;
+
+        return ListTile(
+          //The doctor's username is accessed from the doctorData map
+          title: Text(doctorData?['username'] ?? 'Unknown Doctor'),
+          subtitle: Text('${DateFormat('MMM dd, yyyy').format(appointment['appointmentDate'].toDate())}, ${appointment['appointmentTime']}'),
+         );
+            },
+          );
+
+
+
+          
+        },
+        );
+    
+        },
+      ));
   }
   
 }
