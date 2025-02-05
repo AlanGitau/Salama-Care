@@ -63,7 +63,7 @@ class _LoginscreenState extends State<Loginscreen> {
           } else if (userRole == 'doctor') {
             Navigator.pushReplacement(
               context, 
-              MaterialPageRoute(builder: (context) => const DoctorDashboard()),
+              MaterialPageRoute(builder: (context) => const Doctordashboard()),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

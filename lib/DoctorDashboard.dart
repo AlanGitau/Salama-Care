@@ -1,101 +1,158 @@
 import 'package:flutter/material.dart';
 import 'package:signup/loginScreen.dart';
 
-class DoctorDashboard extends StatelessWidget {
-  const DoctorDashboard({super.key});
+class Doctordashboard extends StatefulWidget {
+  const Doctordashboard({super.key});
 
+  @override
+  State<Doctordashboard> createState() => _DoctordashboardState();
+}
+
+class _DoctordashboardState extends State<Doctordashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer:Drawer(
-                child: ListView(
-                  children: [
-                    const DrawerHeader(
-                      child: Text('menu')
-                      ),
-                      const ListTile(
-                        leading: Icon(Icons.settings),
-                         title: Text('settings')
-                      ),
-                       const ListTile(
-                           leading: Icon(Icons.question_mark_rounded),
-                           title: Text('FAQ'),
-                       ),
-//log out button
-                     ListTile(
-                           leading: const Icon(Icons.logout),
-                           title: const Text('log out',
-                                  style: TextStyle(color: Colors.red),
-                              ),
-                           onTap: () {
-                             Navigator.pushReplacement(
-                              context,
-                               MaterialPageRoute(builder: (context) => const Loginscreen()),
-                              );
-                           },
-                          )
-                  ],
-                ),
-               ),
-      body: SafeArea(
-        child:Column(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: Builder(
+          builder: (context) {
+            return IconButton(onPressed: (){// menu icon
+              Scaffold.of(context).openDrawer();
+            }, 
+            icon: Icon(Icons.menu,color: Colors.black,));
+          }
+        ),
+        title:  Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(9.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Hello',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      ),
-                      Text('Welcome back',
-                      style:TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      ),
-                    ],
+            //searchbar
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'search',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(35),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200]
                 ),
-               //adding the profile icon
-                Builder(
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: const Icon(Icons.person_2)
-                      );
-                  }
-                ),
-              ],
-            ),
-                // statistics section
-             const Text('statistics',style: TextStyle(
-              fontSize: 18,
-            ),),
-
-                // upcoming appointments
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Upcoming appointments',style: TextStyle(
-                  fontSize: 18,
-                  ),),
-
-                  Text('view all',style:TextStyle(color: Colors.blue)),
-                ],
+              )
               ),
-            
+              const SizedBox(width: 15,),
+              //new appointment button
+
+              ElevatedButton(
+                onPressed: (){}, 
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                ),
+                child: const Text('new appointment',style: TextStyle(color: Colors.white),)
+                ),
+
+                const SizedBox(width: 15,),
+//circle avatar
+                const CircleAvatar(
+                   backgroundImage: AssetImage('assets/images/boy.png'),
+                ),
           ],
         ),
+      ),
+      drawer: Drawer(
+        elevation: 15,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          )
         ),
+        backgroundColor: Colors.grey.shade50,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors:[Colors.blue.shade700,Colors.blue.shade400],
+                  begin: Alignment.topLeft,
+                  end:Alignment.bottomRight,
+                  ),
+                  
+                ),
+              child:Text('Salama care',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.2,
+                ),)
+              ),
+
+            ListTile(
+              leading:  Icon(Icons.dashboard, color: Colors.blue.shade600,),
+              title:  Text('Appointments',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade800,
+              ),
+              ),
+              onTap: (){},
+              tileColor: Colors.transparent,
+              splashColor: Colors.blue.withOpacity(0.1),
+              hoverColor: Colors.blue.withOpacity(0.05),
+            ),
+
+            ListTile(
+              leading:Icon(Icons.people, color: Colors.blue.shade600,),
+              title: Text('patients',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade800,
+              ),
+              ),
+              onTap: (){},
+              tileColor: Colors.transparent,
+              splashColor: Colors.blue.withOpacity(0.1),
+              hoverColor: Colors.blue.withOpacity(0.05),
+            ),
+
+            ListTile(
+              leading:  Icon(Icons.settings, color: Colors.blue.shade600,),
+              title: Text('settings',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade800,
+              ),
+              ),
+              onTap: (){},
+              tileColor: Colors.transparent,
+              splashColor: Colors.blue.withOpacity(0.1),
+              hoverColor: Colors.blue.withOpacity(0.05),
+
+            ),
+            Divider(color: Colors.grey.shade300, height: 1),
+
+            ListTile(
+        leading: Icon(Icons.logout, color: Colors.red),
+        title: Text(
+          'Log out',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onTap: () {},
+        tileColor: Colors.transparent,
+        splashColor: Colors.red.withOpacity(0.1),
+        hoverColor: Colors.red.withOpacity(0.05),
+      ),
+
+          ],
+        ),
+      ),
     );
   }
 }
