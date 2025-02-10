@@ -180,20 +180,22 @@ class _DoctordashboardState extends State<Doctordashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Today\'s appointments',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-            SizedBox(height: 10,),
+            const Text('Today\'s appointments',
+             style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+
+            const SizedBox(height: 10,),
 
             //Appointments stat cards
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                statcard(
+                const statcard(
                   title: 'Upcoming appointments', 
                   color: Colors.amber, 
                   count: '10', 
                   icon: Icons.upcoming),
         
-                  statcard(
+                  const statcard(
                     title: 'Completed Appointments', 
                     color: Colors.green, 
                     count: '5', 
@@ -207,7 +209,23 @@ class _DoctordashboardState extends State<Doctordashboard> {
         
         
               ],
-            )
+            ),
+
+            SizedBox(height: 5,),
+
+          //Appointments Table section
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Appointment details'),
+              TextButton(
+                onPressed: (){}, 
+                child:Text('view all')),
+
+            ],
+          ),  
+         AppointmentTables(),
           ],
         ),
       ),
@@ -279,6 +297,57 @@ class statcard extends StatelessWidget {
 
         ),
       ),
+    );
+  }
+}
+
+class AppointmentTables extends StatelessWidget {
+  const AppointmentTables({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black12,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(10),
+        
+
+      ),
+      padding: EdgeInsets.all(20),
+            child: DataTable(
+              columns:[
+                DataColumn(label: Text('patient Name')),
+                DataColumn(label: Text('Phone Number')),
+                DataColumn(label: Text('Date & Time')),
+                DataColumn(label: Text('Status')),
+                DataColumn(label: Text('Actions')),
+
+              ], 
+              rows:[
+                DataRow(cells: [
+                  DataCell(Text('Alan Gitau')),
+                  DataCell(Text('0719654007')),
+                  DataCell(Text(DateTime.now().toString().substring(0,19))),
+                  DataCell(Text('Cornfirmed')),
+                  DataCell(Row(
+                    
+                    children: [
+                      ElevatedButton(onPressed: (){}, 
+                      child: Text('Reschedule')),
+
+                      SizedBox(width: 5,),
+
+                      ElevatedButton(onPressed: (){}, 
+                      child: Text('Cancel')),
+                    ],
+                  )),
+
+                ])
+              ]),
+
     );
   }
 }
