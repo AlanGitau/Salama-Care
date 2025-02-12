@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:signup/loginScreen.dart';
@@ -20,7 +22,7 @@ class _DoctordashboardState extends State<Doctordashboard> {
             return IconButton(onPressed: (){// menu icon
               Scaffold.of(context).openDrawer();
             }, 
-            icon: Icon(Icons.menu,color: Colors.black,));
+            icon: const Icon(Icons.menu,color: Colors.black,));
           }
         ),
         title:  Row(
@@ -37,7 +39,7 @@ class _DoctordashboardState extends State<Doctordashboard> {
                   ),
                   filled: true,
                   fillColor: Colors.grey[200],
-                  contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               )
               ),
@@ -64,7 +66,7 @@ class _DoctordashboardState extends State<Doctordashboard> {
       ),
       drawer: Drawer(
         elevation: 15,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(30),
             bottomRight: Radius.circular(30),
@@ -88,7 +90,7 @@ class _DoctordashboardState extends State<Doctordashboard> {
                 children: [
                   Image.asset('assets/images/Salamacare logo.png',width: 50,height: 50,),
                   const SizedBox(width: 10,),
-                  Text('Salama care',
+                  const Text('Salama care',
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -164,7 +166,11 @@ class _DoctordashboardState extends State<Doctordashboard> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        onTap: () {},
+        onTap: () {
+          Navigator.pushReplacement(context, 
+          MaterialPageRoute(builder: (context)=> const Loginscreen()),
+          );
+        },
         horizontalTitleGap: 16,
         tileColor: Colors.transparent,
         splashColor: Colors.red.withOpacity(0.1),
@@ -211,21 +217,21 @@ class _DoctordashboardState extends State<Doctordashboard> {
               ],
             ),
 
-            SizedBox(height: 5,),
+            const SizedBox(height: 5,),
 
           //Appointments Table section
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Appointment details'),
+              const Text('Appointment details'),
               TextButton(
                 onPressed: (){}, 
-                child:Text('view all')),
+                child:const Text('view all')),
 
             ],
           ),  
-         AppointmentTables(),
+         const AppointmentTables(),
           ],
         ),
       ),
@@ -241,23 +247,22 @@ class statcard extends StatelessWidget {
   final IconData icon;
 
   const statcard({
-    Key?key,
+    super.key,
     required this.title,
     required this.color,
     required this.count,
-    required this.icon,})
-    : super(key: key);
+    required this.icon,});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),//Adds spacing between cards
-        padding: EdgeInsets.all(25),
+        margin: const EdgeInsets.symmetric(horizontal: 8),//Adds spacing between cards
+        padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
           color: color, //passed the color object stored in the statcard widget
           borderRadius: BorderRadius.circular(22),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 6,
@@ -274,21 +279,21 @@ class statcard extends StatelessWidget {
               size: 32,
               color: Colors.black54,
               ),
-            SizedBox(height: 15,),
+            const SizedBox(height: 15,),
 //Card Title
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16, 
                 fontWeight: FontWeight.bold,
                 color: Colors.black87
                 ),
             ),
-            SizedBox(height: 4,),
+            const SizedBox(height: 4,),
 //count 
             Text(
               count,
-              style: TextStyle(fontSize: 28, 
+              style: const TextStyle(fontSize: 28, 
               fontWeight: FontWeight.bold,
               color: Colors.black87,
               ),
@@ -306,6 +311,14 @@ class AppointmentTables extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get current user (doctor) ID
+    final String? currentDoctorId = FirebaseAuth.instance.currentUser?.uid;
+
+    // Check if user is logged in
+    if (currentDoctorId == null) {
+      return Center(child: Text('No user logged in'));
+    }
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -313,41 +326,148 @@ class AppointmentTables extends StatelessWidget {
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(10),
-        
-
       ),
       padding: EdgeInsets.all(20),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('appointments')
+            .where('doctorId', isEqualTo: currentDoctorId)
+            .orderBy('appointmentDate', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          // Add detailed error handling
+          if (snapshot.hasError) {
+            print('Error in StreamBuilder: ${snapshot.error}');
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final appointments = snapshot.data?.docs ?? [];
+
+          // Handle empty appointments
+          if (appointments.isEmpty) {
+            return Center(child: Text('No appointments found'));
+          }
+
+          return SingleChildScrollView( // Add horizontal scrolling
+            scrollDirection: Axis.horizontal,
             child: DataTable(
-              columns:[
-                DataColumn(label: Text('patient Name')),
-                DataColumn(label: Text('Phone Number')),
-                DataColumn(label: Text('Date & Time')),
+              columns: [
+                DataColumn(label: Text('Patient Name')),
+                DataColumn(label: Text('Appointment Date')),
+                DataColumn(label: Text('Appointment Time')),
                 DataColumn(label: Text('Status')),
                 DataColumn(label: Text('Actions')),
+              ],
+              rows: appointments.map((doc) {
+                // Add error handling for document data
+                Map<String, dynamic> data;
+                try {
+                  data = doc.data() as Map<String, dynamic>;
+                } catch (e) {
+                  print('Error parsing document data: $e');
+                  return DataRow(cells: [
+                    DataCell(Text('Error')),
+                    DataCell(Text('Error')),
+                    DataCell(Text('Error')),
+                    DataCell(Text('Error')),
+                    DataCell(Text('Error')),
+                  ]);
+                }
 
-              ], 
-              rows:[
-                DataRow(cells: [
-                  DataCell(Text('Alan Gitau')),
-                  DataCell(Text('0719654007')),
-                  DataCell(Text(DateTime.now().toString().substring(0,19))),
-                  DataCell(Text('Cornfirmed')),
+                return DataRow(cells: [
+                  DataCell(FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('patients')
+                        .doc(data['userId'])
+                        .get(),
+                    builder: (context, patientSnapshot) {
+                      if (patientSnapshot.hasError) {
+                        print('Error fetching patient: ${patientSnapshot.error}');
+                        return Text('Error loading patient');
+                      }
+                      
+                      if (patientSnapshot.hasData) {
+                        try {
+                          final patientData = patientSnapshot.data?.data() as Map<String, dynamic>;
+                          return Text('${patientData['First name']} ${patientData['Last name']}');
+                        } catch (e) {
+                          print('Error parsing patient data: $e');
+                          return Text('Error parsing patient data');
+                        }
+                      }
+                      return Text('Loading...');
+                    },
+                  )),
+                  DataCell(Text(
+                    _formatDate(data['appointmentDate'] as Timestamp)
+                  )),
+                  DataCell(Text(data['appointmentTime']?.toString() ?? 'N/A')),
+                  DataCell(Text(data['status'] ?? 'Scheduled')),
                   DataCell(Row(
-                    
                     children: [
-                      ElevatedButton(onPressed: (){}, 
-                      child: Text('Reschedule')),
-
-                      SizedBox(width: 5,),
-
-                      ElevatedButton(onPressed: (){}, 
-                      child: Text('Cancel')),
+                      ElevatedButton(
+                        onPressed: () => _rescheduleAppointment(doc.id),
+                        child: Text('Reschedule'),
+                      ),
+                      SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: () => _cancelAppointment(doc.id),
+                        child: Text('Cancel'),
+                      ),
                     ],
                   )),
-
-                ])
-              ]),
-
+                ]);
+              }).toList(),
+            ),
+          );
+        },
+      ),
     );
   }
+
+  String _formatDate(Timestamp timestamp) {
+    try {
+      final date = timestamp.toDate();
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      print('Error formatting date: $e');
+      return 'Invalid date';
+    }
+  }
+
+  Future<void> _rescheduleAppointment(String appointmentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(appointmentId)
+          .update({
+            'status': 'Rescheduled',
+          });
+    } catch (e) {
+      print('Error rescheduling appointment: $e');
+    }
+  }
+
+  Future<void> _cancelAppointment(String appointmentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(appointmentId)
+          .update({'status': 'Cancelled'});
+    } catch (e) {
+      print('Error cancelling appointment: $e');
+    }
+  }
 }
+               
+              
+              
+
+    
+  

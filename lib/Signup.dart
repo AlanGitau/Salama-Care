@@ -16,7 +16,9 @@ class _SignupState extends State<Signup> {
   String? _selectedRole;
   final List<String> roles = ['patient', 'doctor'];
   
-  // Additional controllers for doctor details
+  
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _specializationController = TextEditingController();
   final _experienceController = TextEditingController();
   final _usernamecontroller = TextEditingController();
@@ -30,6 +32,17 @@ class _SignupState extends State<Signup> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select a role!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Validate name fields
+    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter your first and last name!'),
           backgroundColor: Colors.red,
         ),
       );
@@ -68,6 +81,8 @@ class _SignupState extends State<Signup> {
             'email': _emailcontroller.text.trim(),
             'username': _usernamecontroller.text.trim(),
             'role': _selectedRole,
+            'First name': _firstNameController.text.trim(),
+            'Last name': _lastNameController.text.trim(),
           };
 
           // Add doctor-specific fields if role is doctor
@@ -75,9 +90,6 @@ class _SignupState extends State<Signup> {
             userData.addAll({
               'specialization': _specializationController.text.trim(),
               'experience': _experienceController.text.trim(),
-              //'isAvailable': true, // Default availability status
-              //'rating': 0.0, // Initial rating
-             // 'totalRatings': 0, // Number of ratings received
             });
           }
 
@@ -86,6 +98,21 @@ class _SignupState extends State<Signup> {
               .collection('users')
               .doc(user.uid)
               .set(userData);
+
+          // If role is patient, also create a patient document
+          if (_selectedRole == 'patient') {
+            await FirebaseFirestore.instance
+                .collection('patients')
+                .doc(user.uid)  // Using user.uid as the document ID
+                .set({
+                  'First name': _firstNameController.text.trim(),
+                  'Last name': _lastNameController.text.trim(),
+                  'userId': user.uid,  // Store the userId for reference
+                  'Age': null,  // You can add these fields later
+                  'Gender': null,
+                  'Allergies': null,
+                });
+          }
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -142,7 +169,7 @@ class _SignupState extends State<Signup> {
             ),
             const SizedBox(height: 10),
 
-            // Roles dropdown (your existing code)
+            // Role dropdown
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: DropdownButtonFormField<String>(
@@ -170,7 +197,37 @@ class _SignupState extends State<Signup> {
               ),
             ),
 
-            // Basic fields
+            // First Name field
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: _firstNameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  prefixIcon: const Icon(Icons.person),
+                  labelText: 'First Name',
+                ),
+              ),
+            ),
+
+            // Last Name field
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: _lastNameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  prefixIcon: const Icon(Icons.person),
+                  labelText: 'Last Name',
+                ),
+              ),
+            ),
+
+            // Existing fields...
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
