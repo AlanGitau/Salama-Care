@@ -183,56 +183,63 @@ class _DoctordashboardState extends State<Doctordashboard> {
 
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Today\'s appointments',
-             style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-
-            const SizedBox(height: 10,),
-
-            //Appointments stat cards
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Today\'s appointments',
+               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+          
+              const SizedBox(height: 10,),
+          
+              //Appointments stat cards
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const statcard(
+                    title: 'Upcoming appointments', 
+                    color: Colors.amber, 
+                    count: '10', 
+                    icon: Icons.upcoming),
+          
+                    const statcard(
+                      title: 'Completed Appointments', 
+                      color: Colors.green, 
+                      count: '5', 
+                      icon: Icons.check_circle),
+          
+                   statcard(
+                    title:'missed Apointments', 
+                    color: Colors.orange.shade200, 
+                    count: '2', 
+                    icon: Icons.hourglass_empty)
+          
+          
+                ],
+              ),
+          
+              const SizedBox(height: 5,),
+          
+            //Appointments Table section
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const statcard(
-                  title: 'Upcoming appointments', 
-                  color: Colors.amber, 
-                  count: '10', 
-                  icon: Icons.upcoming),
-        
-                  const statcard(
-                    title: 'Completed Appointments', 
-                    color: Colors.green, 
-                    count: '5', 
-                    icon: Icons.check_circle),
-        
-                 statcard(
-                  title:'missed Apointments', 
-                  color: Colors.orange.shade200, 
-                  count: '2', 
-                  icon: Icons.hourglass_empty)
-        
-        
+                const Text('Appointment details'),
+                TextButton(
+                  onPressed: (){}, 
+                  child:const Text('view all')),
+          
               ],
+            ),  
+           Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height * 0.5
             ),
-
-            const SizedBox(height: 5,),
-
-          //Appointments Table section
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Appointment details'),
-              TextButton(
-                onPressed: (){}, 
-                child:const Text('view all')),
-
+            child: const AppointmentTables(),
+            ),
             ],
-          ),  
-         const AppointmentTables(),
-          ],
+          ),
         ),
       ),
     );
@@ -311,12 +318,10 @@ class AppointmentTables extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get current user (doctor) ID
     final String? currentDoctorId = FirebaseAuth.instance.currentUser?.uid;
 
-    // Check if user is logged in
     if (currentDoctorId == null) {
-      return Center(child: Text('No user logged in'));
+      return const Center(child: Text('No user logged in'));
     }
 
     return Container(
@@ -327,7 +332,7 @@ class AppointmentTables extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('appointments')
@@ -335,7 +340,6 @@ class AppointmentTables extends StatelessWidget {
             .orderBy('appointmentDate', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
-          // Add detailed error handling
           if (snapshot.hasError) {
             print('Error in StreamBuilder: ${snapshot.error}');
             return Center(
@@ -344,86 +348,86 @@ class AppointmentTables extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final appointments = snapshot.data?.docs ?? [];
 
-          // Handle empty appointments
           if (appointments.isEmpty) {
-            return Center(child: Text('No appointments found'));
+            return const Center(child: Text('No appointments found'));
           }
 
-          return SingleChildScrollView( // Add horizontal scrolling
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: [
-                DataColumn(label: Text('Patient Name')),
-                DataColumn(label: Text('Appointment Date')),
-                DataColumn(label: Text('Appointment Time')),
-                DataColumn(label: Text('Status')),
-                DataColumn(label: Text('Actions')),
-              ],
-              rows: appointments.map((doc) {
-                // Add error handling for document data
-                Map<String, dynamic> data;
-                try {
-                  data = doc.data() as Map<String, dynamic>;
-                } catch (e) {
-                  print('Error parsing document data: $e');
-                  return DataRow(cells: [
-                    DataCell(Text('Error')),
-                    DataCell(Text('Error')),
-                    DataCell(Text('Error')),
-                    DataCell(Text('Error')),
-                    DataCell(Text('Error')),
-                  ]);
-                }
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical, // Vertical scrolling for the entire table
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal, // Horizontal scrolling for the table
+              child: DataTable(
+                headingRowHeight: 40,
+                columns: const [
+                  DataColumn(label: Text('Patient Name')),
+                  DataColumn(label: Text('Appointment Date')),
+                  DataColumn(label: Text('Appointment Time')),
+                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Actions')),
+                ],
+                rows: appointments.map((doc) {
+                  Map<String, dynamic> data;
+                  try {
+                    data = doc.data() as Map<String, dynamic>;
+                  } catch (e) {
+                    print('Error parsing document data: $e');
+                    return const DataRow(cells: [
+                      DataCell(Text('Error')),
+                      DataCell(Text('Error')),
+                      DataCell(Text('Error')),
+                      DataCell(Text('Error')),
+                      DataCell(Text('Error')),
+                    ]);
+                  }
 
-                return DataRow(cells: [
-                  DataCell(FutureBuilder<DocumentSnapshot>(
-                    future: FirebaseFirestore.instance
-                        .collection('patients')
-                        .doc(data['userId'])
-                        .get(),
-                    builder: (context, patientSnapshot) {
-                      if (patientSnapshot.hasError) {
-                        print('Error fetching patient: ${patientSnapshot.error}');
-                        return Text('Error loading patient');
-                      }
-                      
-                      if (patientSnapshot.hasData) {
-                        try {
-                          final patientData = patientSnapshot.data?.data() as Map<String, dynamic>;
-                          return Text('${patientData['First name']} ${patientData['Last name']}');
-                        } catch (e) {
-                          print('Error parsing patient data: $e');
-                          return Text('Error parsing patient data');
+                  return DataRow(cells: [
+                    DataCell(FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('patients')
+                          .doc(data['userId'])
+                          .get(),
+                      builder: (context, patientSnapshot) {
+                        if (patientSnapshot.hasError) {
+                          print('Error fetching patient: ${patientSnapshot.error}');
+                          return const Text('Error loading patient');
                         }
-                      }
-                      return Text('Loading...');
-                    },
-                  )),
-                  DataCell(Text(
-                    _formatDate(data['appointmentDate'] as Timestamp)
-                  )),
-                  DataCell(Text(data['appointmentTime']?.toString() ?? 'N/A')),
-                  DataCell(Text(data['status'] ?? 'Scheduled')),
-                  DataCell(Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => _rescheduleAppointment(doc.id),
-                        child: Text('Reschedule'),
-                      ),
-                      SizedBox(width: 5),
-                      ElevatedButton(
-                        onPressed: () => _cancelAppointment(doc.id),
-                        child: Text('Cancel'),
-                      ),
-                    ],
-                  )),
-                ]);
-              }).toList(),
+                        
+                        if (patientSnapshot.hasData) {
+                          try {
+                            final patientData = patientSnapshot.data?.data() as Map<String, dynamic>;
+                            return Text('${patientData['First name']} ${patientData['Last name']}');
+                          } catch (e) {
+                            print('Error parsing patient data: $e');
+                            return const Text('Error parsing patient data');
+                          }
+                        }
+                        return const Text('Loading...');
+                      },
+                    )),
+                    DataCell(Text(_formatDate(data['appointmentDate'] as Timestamp))),
+                    DataCell(Text(data['appointmentTime']?.toString() ?? 'N/A')),
+                    DataCell(Text(data['status'] ?? 'Scheduled')),
+                    DataCell(Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => _rescheduleAppointment(doc.id),
+                          child: const Text('Reschedule'),
+                        ),
+                        const SizedBox(width: 5),
+                        ElevatedButton(
+                          onPressed: () => _cancelAppointment(doc.id),
+                          child: const Text('Cancel'),
+                        ),
+                      ],
+                    )),
+                  ]);
+                }).toList(),
+              ),
             ),
           );
         },

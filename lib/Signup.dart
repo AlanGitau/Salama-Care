@@ -160,18 +160,19 @@ class _SignupState extends State<Signup> {
               height: 200,
               width: 200,
             ),
-            const Text(
+            Text(
               'Create your free account',
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[900],
               ),
             ),
             const SizedBox(height: 10),
 
             // Role dropdown
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: DropdownButtonFormField<String>(
                 value: _selectedRole,
                 items: roles
@@ -199,7 +200,7 @@ class _SignupState extends State<Signup> {
 
             // First Name field
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: _firstNameController,
                 decoration: InputDecoration(
@@ -214,7 +215,7 @@ class _SignupState extends State<Signup> {
 
             // Last Name field
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: _lastNameController,
                 decoration: InputDecoration(
@@ -227,9 +228,9 @@ class _SignupState extends State<Signup> {
               ),
             ),
 
-            // Existing fields...
+            // username field
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: _usernamecontroller,
                 decoration: InputDecoration(
@@ -241,9 +242,9 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-
+             //username field
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: _emailcontroller,
                 keyboardType: TextInputType.emailAddress,
@@ -256,9 +257,9 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-
+          //password field
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: _passwordcontroller,
                 obscureText: true,
@@ -275,7 +276,7 @@ class _SignupState extends State<Signup> {
             // Doctor-specific fields
             if (_selectedRole == 'doctor') ...[
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: _specializationController,
                   decoration: InputDecoration(
@@ -288,7 +289,7 @@ class _SignupState extends State<Signup> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: _experienceController,
                   decoration: InputDecoration(
