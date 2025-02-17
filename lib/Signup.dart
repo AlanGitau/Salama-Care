@@ -15,7 +15,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   String? _selectedRole;
   final List<String> roles = ['patient', 'doctor'];
-  
+  bool _obscurePassword = true;
   
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -103,12 +103,12 @@ class _SignupState extends State<Signup> {
           if (_selectedRole == 'patient') {
             await FirebaseFirestore.instance
                 .collection('patients')
-                .doc(user.uid)  // Using user.uid as the document ID
+                .doc(user.uid)
                 .set({
                   'First name': _firstNameController.text.trim(),
                   'Last name': _lastNameController.text.trim(),
-                  'userId': user.uid,  // Store the userId for reference
-                  'Age': null,  // You can add these fields later
+                  'userId': user.uid,
+                  'Age': null,
                   'Gender': null,
                   'Allergies': null,
                 });
@@ -151,190 +151,282 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/images/sign-up.svg',
-              height: 200,
-              width: 200,
-            ),
-            Text(
-              'Create your free account',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey[900],
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Role dropdown
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: DropdownButtonFormField<String>(
-                value: _selectedRole,
-                items: roles
-                    .map((role) => DropdownMenuItem(
-                          value: role,
-                          child: Text(role),
-                        ))
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedRole = value),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  labelText: 'Role',
-                  prefixIcon: const Icon(Icons.person_outline),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  isDense: true,
-                ),
-                style: const TextStyle(color: Colors.black, fontSize: 16),
-                dropdownColor: Colors.white,
-                isExpanded: true,
-              ),
-            ),
-
-            // First Name field
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _firstNameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  prefixIcon: const Icon(Icons.person),
-                  labelText: 'First Name',
-                ),
-              ),
-            ),
-
-            // Last Name field
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _lastNameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  prefixIcon: const Icon(Icons.person),
-                  labelText: 'Last Name',
-                ),
-              ),
-            ),
-
-            // username field
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _usernamecontroller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  prefixIcon: const Icon(Icons.person),
-                  labelText: 'Username',
-                ),
-              ),
-            ),
-             //username field
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _emailcontroller,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  prefixIcon: const Icon(Icons.email),
-                  labelText: 'Email',
-                ),
-              ),
-            ),
-          //password field
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _passwordcontroller,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  prefixIcon: const Icon(Icons.password),
-                  labelText: 'Password',
-                ),
-              ),
-            ),
-
-            // Doctor-specific fields
-            if (_selectedRole == 'doctor') ...[
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  controller: _specializationController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    prefixIcon: const Icon(Icons.medical_services),
-                    labelText: 'Specialization',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  controller: _experienceController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    prefixIcon: const Icon(Icons.work),
-                    labelText: 'Years of Experience',
-                    hintText: 'e.g., 5',
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF4158D0),
+              Color(0xFFC850C0),
+              Color(0xFFFFCC70),
             ],
-
-            // Signup Button
-            _isloading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _handlesignup,
-                    child: const Text('Sign Up'),
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  
+                  // Header Section
+                  Center(
+                    child: Column(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/sign-up.svg',
+                          height: 150,
+                          width: 150,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 2),
+                                blurRadius: 4,
+                                color: Colors.black.withOpacity(0.25),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Join our healthcare community',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Already have an account?',
-                  style: TextStyle(fontSize: 15),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Loginscreen()),
-                    );
-                  },
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.blue, fontSize: 15),
+                  const SizedBox(height: 32),
+
+                  // Form Container
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        // Role Dropdown
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedRole,
+                            items: roles.map((role) => DropdownMenuItem(
+                              value: role,
+                              child: Text(
+                                role.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            )).toList(),
+                            onChanged: (value) => setState(() => _selectedRole = value),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                              hintText: 'Select Role',
+                              prefixIcon: Icon(Icons.person_outline, color: Color(0xFF4158D0)),
+                            ),
+                            icon: Icon(Icons.arrow_drop_down, color: Color(0xFF4158D0)),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Name Fields
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                controller: _firstNameController,
+                                hint: 'First Name',
+                                icon: Icons.person_outline,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildTextField(
+                                controller: _lastNameController,
+                                hint: 'Last Name',
+                                icon: Icons.person_outline,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Username and Email Fields
+                        _buildTextField(
+                          controller: _usernamecontroller,
+                          hint: 'Username',
+                          icon: Icons.alternate_email,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField(
+                          controller: _emailcontroller,
+                          hint: 'Email',
+                          icon: Icons.email_outlined,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Password Field
+                        _buildTextField(
+                          controller: _passwordcontroller,
+                          hint: 'Password',
+                          icon: Icons.lock_outline,
+                          isPassword: true,
+                          obscureText: _obscurePassword,
+                          onTogglePassword: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+
+                        // Doctor-specific fields
+                        if (_selectedRole == 'doctor') ...[
+                          const SizedBox(height: 16),
+                          _buildTextField(
+                            controller: _specializationController,
+                            hint: 'Specialization',
+                            icon: Icons.medical_services_outlined,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildTextField(
+                            controller: _experienceController,
+                            hint: 'Years of Experience',
+                            icon: Icons.work_outline,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ],
+
+                        const SizedBox(height: 24),
+
+                        // Sign Up Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isloading ? null : _handlesignup,
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Color(0xFF4158D0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: _isloading
+                                ? CircularProgressIndicator(color: Colors.white)
+                                : Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Login Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account?',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const Loginscreen()),
+                                );
+                              },
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Color(0xFF4158D0),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    bool isPassword = false,
+    bool obscureText = false,
+    VoidCallback? onTogglePassword,
+    TextInputType? keyboardType,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword ? obscureText : false,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          hintText: hint,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          prefixIcon: Icon(icon, color: Color(0xFF4158D0)),
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Color(0xFF4158D0),
+                  ),
+                  onPressed: onTogglePassword,
+                )
+              : null,
         ),
       ),
     );
