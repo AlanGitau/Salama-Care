@@ -5,9 +5,7 @@ import 'appointmentsScreen.dart';
 import 'constants/categories.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:signup/loginScreen.dart';
-//import 'constants/categories.dart';
 
-//handle the bottom navigation bar
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
@@ -34,34 +32,51 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: pages[_selectedIndex], // Dynamically display the selected screen
+        child: pages[_selectedIndex],
       ),
-      bottomNavigationBar: GNav(
-        selectedIndex: _selectedIndex,
-        onTabChange: ontapped, // Correctly pass the function reference
-        tabBorderRadius: 25,
-        gap: 10,
-        tabBackgroundColor: Colors.purple.shade100.withOpacity(0.5),
-        tabs: const [
-          GButton(
-            icon: Icons.home,
-            text: 'Home',
-          ),
-          GButton(
-            icon: Icons.calendar_month,
-            text: 'Appointments',
-          ),
-          GButton(
-            icon: Icons.person,
-            text: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: GNav(
+          selectedIndex: _selectedIndex,
+          onTabChange: ontapped,
+          gap: 8,
+          tabBorderRadius: 16,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          tabBackgroundColor: const Color(0xFFC850C0).withOpacity(0.2),
+          tabs: const [
+            GButton(
+              icon: Icons.home_rounded,
+              text: 'Home',
+              iconColor: Color(0xFF4158D0),
+              textColor: Color(0xFF4158D0),
+            ),
+            GButton(
+              icon: Icons.calendar_month_rounded,
+              text: 'Appointments',
+              iconColor: Color(0xFF4158D0),
+              textColor: Color(0xFF4158D0),
+            ),
+            GButton(
+              icon: Icons.person_rounded,
+              text: 'Profile',
+              iconColor: Color(0xFF4158D0),
+              textColor: Color(0xFF4158D0),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-//Home screen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -73,195 +88,176 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Drawer(
-          elevation: 15,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          )),
-          backgroundColor: Colors.grey.shade50,
+      drawer: Drawer(
+        elevation: 0,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF4158D0).withOpacity(0.95),
+                const Color(0xFFC850C0).withOpacity(0.95),
+              ],
+            ),
+          ),
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.blue.shade700, Colors.blue.shade400],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/Salamacare logo.png',
+                      height: 50,
+                      width: 50,
                     ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/Salamacare logo.png',
-                        height: 50,
-                        width: 50,
+                    const SizedBox(width: 16),
+                    const Text(
+                      'Salama Care',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const Text(
-                        'Salama care',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ],
-                  )),
-              ListTile(
-                leading: const Icon(
-                  Icons.settings,
-                  color: Colors.blue,
+                    ),
+                  ],
                 ),
-                title: Text(
-                  'Settings',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade800,
-                  ),
-                ),
-                onTap: () {},
-                horizontalTitleGap: 16,
-                tileColor: Colors.transparent,
-                splashColor: Colors.blue.withOpacity(0.1),
-                hoverColor: Colors.blue.withOpacity(0.05),
               ),
-              ListTile(
-                leading:
-                    const Icon(Icons.question_mark_rounded, color: Colors.blue),
-                title: Text(
-                  'FAQ',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade800,
-                  ),
-                ),
-                onTap: () {},
-                horizontalTitleGap: 16,
-                tileColor: Colors.transparent,
-                splashColor: Colors.blue.withOpacity(0.1),
-                hoverColor: Colors.blue.withOpacity(0.05),
-              ),
-
-              const Divider(
-                height: 0.1,
-              ),
-//log out button
-              ListTile(
-                leading: const Icon(
-                  Icons.logout,
-                  color: Colors.red,
-                ),
-                title: const Text(
-                  'log out',
-                  style: TextStyle(color: Colors.red),
-                ),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Loginscreen()),
-                  );
-                },
-                horizontalTitleGap: 16,
-                tileColor: Colors.transparent,
-                splashColor: Colors.red.withOpacity(0.1),
-                hoverColor: Colors.red.withOpacity(0.05),
-              )
+              _buildDrawerItem(Icons.settings_rounded, 'Settings', () {}),
+              _buildDrawerItem(Icons.help_rounded, 'FAQ', () {}),
+              const Divider(color: Colors.white24, height: 1),
+              _buildDrawerItem(Icons.logout_rounded, 'Log out', () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Loginscreen()),
+                );
+              }, isLogout: true),
             ],
           ),
         ),
-        body: SafeArea(
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(9.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hello',
-                        style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF4158D0),
+              Color(0xFFC850C0),
+              Color(0xFFFFCC70),
+            ],
+          ),
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Hello ,\u{1F44B}',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'How are you feeling today?',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Builder(
+                          builder: (context) => IconButton(
+                            icon: const Icon(Icons.menu_rounded, color: Colors.white),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search doctors, services...',
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          prefixIcon: Icon(Icons.search_rounded, color: Colors.grey.shade400),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         ),
                       ),
-                      Text(
-                        'Welcome back',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(20, 30, 20, 16),
+                      child: Text(
+                        'Our Services',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xFF4158D0),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-//adding the profile icon
-
-                Builder(builder: (context) {
-                  return GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: const Icon(Icons.menu));
-                }),
-              ],
-            ),
-
-//search bar
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Search',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-
-            const Text(
-              'Our services',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-
-//horizontal listview
-            SizedBox(
-              height: 80,
-//color: Colors.black,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: const [
-                  CategoryCard(
-                    categoryName: 'general',
-                    iconImage: 'assets/Icons/health.png',
-                  ),
-                  CategoryCard(
-                    categoryName: 'Dentist',
-                    iconImage: 'assets/Icons/dental-care.png',
-                  ),
-                  CategoryCard(
+                    ),
+                    SizedBox(
+                      height: 120,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        children: const [
+                          CategoryCard(
+                            categoryName: 'General',
+                            iconImage: 'assets/Icons/health.png',
+                          ),
+                          CategoryCard(
+                            categoryName: 'Dentist',
+                            iconImage: 'assets/Icons/dental-care.png',
+                          ),
+                          CategoryCard(
                     categoryName: 'Dermatologist',
                     iconImage: 'assets/Icons/dermatology.png',
                   ),
@@ -297,28 +293,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     categoryName: 'orthopedic care',
                     iconImage: 'assets/Icons/broken-arm.png',
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Text(
-              'Top doctors',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-
-            Expanded(
-              child:
-                  ListView(scrollDirection: Axis.horizontal, children: const [
-                Doctorcard(
-                  imageUrl: 'assets/images/smiling doctor.jpg',
-                  name: 'Dr. Kevin Maina',
-                  speciality: 'Dentist',
-                ),
-                Doctorcard(
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
+                      child: Text(
+                        'Top Doctors',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF4158D0),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 220,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        children: const [
+                          Doctorcard(
+                            imageUrl: 'assets/images/smiling doctor.jpg',
+                            name: 'Dr. Kevin Maina',
+                            speciality: 'Dentist',
+                          ),
+                          // ... other doctor cards
+                          Doctorcard(
                   imageUrl: 'assets/images/devine doctor.jpg',
                   name: 'Dr. faith wanjiru',
                   speciality: 'Dermatologist',
@@ -335,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Doctorcard(
                   imageUrl: 'assets/images/doctor5.jpg',
-                  name: 'Dr. faith wanjiru',
+                  name: 'Dr. Ben Carson',
                   speciality: 'General doctor',
                 ),
                 Doctorcard(
@@ -343,11 +344,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   name: 'Dr. faith wanjiru',
                   speciality: 'General doctor',
                 ),
-              ]),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
 
-//bottom navigation bar
-          ]),
-        ));
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap, {bool isLogout = false}) {
+    return ListTile(
+      leading: Icon(icon, color: isLogout ? Colors.red.shade100 : Colors.white),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isLogout ? Colors.red.shade100 : Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onTap: onTap,
+      horizontalTitleGap: 16,
+      splashColor: Colors.white.withOpacity(0.1),
+      hoverColor: Colors.white.withOpacity(0.05),
+    );
   }
 }

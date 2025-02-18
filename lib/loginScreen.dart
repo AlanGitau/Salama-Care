@@ -60,7 +60,12 @@ class _LoginscreenState extends State<Loginscreen> {
       body: Container(
         decoration:  BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade700, Colors.blue.shade400],
+            colors: [
+              Color(0xFF4158D0),
+              Color(0xFFC850C0),
+              Color(0xFFFFCC70),
+            ],
+            //colors: [Colors.blue.shade700, Colors.blue.shade400],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
