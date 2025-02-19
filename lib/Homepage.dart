@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:signup/constants/doctors.dart';
+import 'BookAppointmentPage.dart';
 import 'ProfileScreen.dart';
 import 'appointmentsScreen.dart';
 import 'constants/categories.dart';
@@ -169,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hello ,\u{1F44B}',
+                              'Hello ,\u{1F44B}',//hand emoji
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -354,6 +355,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed:(){
+          Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const BookAppointmentPage()),
+                                );
+      } ,
+      child: Text('Book'),
       ),
     );
   }
