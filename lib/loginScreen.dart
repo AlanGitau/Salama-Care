@@ -58,7 +58,7 @@ class _LoginscreenState extends State<Loginscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration:  BoxDecoration(
+        decoration:  const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFF4158D0),

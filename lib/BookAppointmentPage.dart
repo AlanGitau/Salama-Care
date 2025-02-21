@@ -204,7 +204,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                           },
                           title: selectedTime == null
                               ? "Select Time"
-                              : "${selectedTime!.format(context)}",
+                              : selectedTime!.format(context),
                           icon: Icons.access_time_outlined,
                         ),
 

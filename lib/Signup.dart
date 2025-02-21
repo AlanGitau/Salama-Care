@@ -152,7 +152,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -190,7 +190,7 @@ class _SignupState extends State<Signup> {
                             color: Colors.white,
                             shadows: [
                               Shadow(
-                                offset: Offset(0, 2),
+                                offset: const Offset(0, 2),
                                 blurRadius: 4,
                                 color: Colors.black.withOpacity(0.25),
                               ),
@@ -246,13 +246,13 @@ class _SignupState extends State<Signup> {
                               ),
                             )).toList(),
                             onChanged: (value) => setState(() => _selectedRole = value),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(horizontal: 16),
                               hintText: 'Select Role',
                               prefixIcon: Icon(Icons.person_outline, color: Color(0xFF4158D0)),
                             ),
-                            icon: Icon(Icons.arrow_drop_down, color: Color(0xFF4158D0)),
+                            icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF4158D0)),
                           ),
                         ),
 
@@ -337,15 +337,15 @@ class _SignupState extends State<Signup> {
                             onPressed: _isloading ? null : _handlesignup,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Color(0xFF4158D0),
+                              backgroundColor: const Color(0xFF4158D0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               elevation: 2,
                             ),
                             child: _isloading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : Text(
+                                ? const CircularProgressIndicator(color: Colors.white)
+                                : const Text(
                                     'Create Account',
                                     style: TextStyle(
                                       fontSize: 18,
@@ -373,7 +373,7 @@ class _SignupState extends State<Signup> {
                                   MaterialPageRoute(builder: (context) => const Loginscreen()),
                                 );
                               },
-                              child: Text(
+                              child: const Text(
                                 'Login',
                                 style: TextStyle(
                                   color: Color(0xFF4158D0),
@@ -416,13 +416,13 @@ class _SignupState extends State<Signup> {
         decoration: InputDecoration(
           hintText: hint,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16),
-          prefixIcon: Icon(icon, color: Color(0xFF4158D0)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          prefixIcon: Icon(icon, color: const Color(0xFF4158D0)),
           suffixIcon: isPassword
               ? IconButton(
                   icon: Icon(
                     obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: Color(0xFF4158D0),
+                    color: const Color(0xFF4158D0),
                   ),
                   onPressed: onTogglePassword,
                 )

@@ -64,14 +64,14 @@ class Appointmentsscreen extends StatelessWidget {
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF4158D0),
-                const Color(0xFFC850C0),
-                const Color(0xFFFFCC70),
+                Color(0xFF4158D0),
+                Color(0xFFC850C0),
+                Color(0xFFFFCC70),
               ],
             ),
           ),
@@ -84,10 +84,10 @@ class Appointmentsscreen extends StatelessWidget {
         ),
         floatingActionButton: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [
-                const Color(0xFF4158D0),
-                const Color(0xFFC850C0),
+                Color(0xFF4158D0),
+                Color(0xFFC850C0),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
@@ -160,8 +160,8 @@ class AppointmentCard extends StatelessWidget {
                   backgroundColor: const Color(0xFF4158D0).withOpacity(0.1),
                   child: Text(
                     doctorData?['username']?.substring(0, 1).toUpperCase() ?? 'D',
-                    style: TextStyle(
-                      color: const Color(0xFF4158D0),
+                    style: const TextStyle(
+                      color: Color(0xFF4158D0),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),

@@ -363,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   MaterialPageRoute(builder: (context) => const BookAppointmentPage()),
                                 );
       } ,
-      child: Text('Book'),
+      child: const Text('Book'),
       ),
     );
   }
