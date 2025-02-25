@@ -18,43 +18,50 @@ class _MedicalformState extends State<Medicalform> {
   String nextOfKinName = '';
   String NextofKinContact = '';
 
-  void _submitForm() async {
-    if (_formkey.currentState!.validate()) {
-      try {
-        final user = FirebaseAuth.instance.currentUser;
-        if (user == null) return;
+ void _submitForm() async {
+  if (_formkey.currentState!.validate()) {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
 
-        // Convert comma-separated strings to arrays
-        List<String> allergiesList = Allergies.split(',').map((e) => e.trim()).toList();
-        List<String> medicationsList = medications.split(',').map((e) => e.trim()).toList();
+      // Convert comma-separated strings to arrays
+      List<String> allergiesList = Allergies.split(',').map((e) => e.trim()).toList();
+      List<String> medicationsList = medications.split(',').map((e) => e.trim()).toList();
 
-        // Save to Firestore
-        await FirebaseFirestore.instance
-            .collection('patients')
-            .doc(user.uid) // Use the user's UID as the document ID
-            .update({
-          'Allergies': allergiesList,
-          'Medications': medicationsList,
-          'Contact': Contact,
-          'NextOfKinName': nextOfKinName,
-          'NextOfKinContact': NextofKinContact,
-          'BloodType': bloodtype,
-          'profileComplete': true,
-        });
+      // Save to Firestore
+      await FirebaseFirestore.instance
+          .collection('patients')
+          .doc(user.uid) // Use the user's UID as the document ID
+          .update({
+        'Allergies': allergiesList,
+        'Medications': medicationsList,
+        'Contact': Contact,
+        'NextOfKinName': nextOfKinName,
+        'NextOfKinContact': NextofKinContact,
+        'BloodType': bloodtype,
+        'profileComplete': true, // Update patients collection
+      });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Medical data saved!')),
-        );
+      // Update users collection
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
+        'profileComplete': true, // Update users collection
+      });
 
-        Navigator.pop(context); // Return to previous screen
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Medical data saved!')),
+      );
+
+      Navigator.pop(context); // Return to previous screen
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -111,6 +111,7 @@ class _SignupState extends State<Signup> {
                   'Age': null,
                   'Gender': null,
                   'Allergies': null,
+                  'profileComplete': false,
                 });
           }
 

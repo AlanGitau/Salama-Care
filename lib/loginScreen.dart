@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:signup/DoctorDashboard.dart';
 import 'package:signup/Homepage.dart';
+import 'package:signup/MedicalForm.dart';
 import 'package:signup/Services/auth_service.dart';
 import 'package:signup/signup.dart';
 
@@ -21,38 +22,62 @@ class _LoginscreenState extends State<Loginscreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  Future<void> _handleLogin() async {
-    setState(() => _isLoading = true);
-    try {
-      final result = await _authService.login(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
-      if (result == 'Success') {
-        final user = FirebaseAuth.instance.currentUser;
-        if (user != null) {
-          final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-          final userRole = userDoc['role'];
+ Future<void> _handleLogin() async {
+  setState(() => _isLoading = true);
+  try {
+    final result = await _authService.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+    if (result == 'Success') {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Get user role and profileComplete from users collection
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        final userRole = userDoc['role'];
+        final profileComplete = userDoc['profileComplete'] ?? false; // Default to false if missing
+
+        if (userRole == 'doctor') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => userRole == 'doctor' ? const Doctordashboard() : const Homepage(),
-            ),
+            MaterialPageRoute(builder: (context) => const Doctordashboard()),
           );
+        } else {
+          if (profileComplete) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Homepage()),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Medicalform()),
+            );
+          }
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result ?? 'Authentication failed'), backgroundColor: Colors.red),
-        );
       }
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login error: ${e.toString()}'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(result ?? 'Authentication failed'),
+          backgroundColor: Colors.red,
+        ),
       );
-    } finally {
-      setState(() => _isLoading = false);
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Login error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  } finally {
+    setState(() => _isLoading = false);
   }
+}
 
   @override
   Widget build(BuildContext context) {
