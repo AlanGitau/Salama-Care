@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hello ,\u{1F44B}',//hand emoji
+                              'Hello,\u{1F44B}',//hand emoji
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,

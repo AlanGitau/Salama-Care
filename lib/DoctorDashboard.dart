@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:signup/loginScreen.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'calendar_view.dart';
 
 class Doctordashboard extends StatefulWidget {
   const Doctordashboard({super.key});
@@ -13,6 +15,8 @@ class Doctordashboard extends StatefulWidget {
 }
 
 class _DoctordashboardState extends State<Doctordashboard> {
+  String? get _currentDoctorId => FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +24,16 @@ class _DoctordashboardState extends State<Doctordashboard> {
         backgroundColor: Colors.white,
         leading: Builder(
           builder: (context) {
-            return IconButton(onPressed: (){// menu icon
-              Scaffold.of(context).openDrawer();
-            }, 
-            icon: const Icon(Icons.menu,color: Colors.black,));
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(Icons.menu, color: Colors.black),
+            );
           }
         ),
-        title:  Row(
+        title: Row(
           children: [
-            //searchbar
             Expanded(
               child: TextField(
                 decoration: InputDecoration(
@@ -43,25 +48,21 @@ class _DoctordashboardState extends State<Doctordashboard> {
                   contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               )
+            ),
+            const SizedBox(width: 15),
+            ElevatedButton(
+              onPressed: (){}, 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                elevation: 2,
               ),
-              const SizedBox(width: 15,),
-              //new appointment button
-
-              ElevatedButton(
-                onPressed: (){}, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  elevation: 2,
-                ),
-                child: const Text('New appointment',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500),)
-                ),
-
-                const SizedBox(width: 15,),
-//circle avatar
-                const CircleAvatar(
-                   backgroundImage: AssetImage('assets/images/boy.png'),
-                   radius: 20,
-                ),
+              child: const Text('New appointment', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500))
+            ),
+            const SizedBox(width: 15),
+            const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/boy.png'),
+              radius: 20,
+            ),
           ],
         ),
       ),
@@ -83,33 +84,32 @@ class _DoctordashboardState extends State<Doctordashboard> {
                   colors:[Colors.blue.shade700,Colors.blue.shade400],
                   begin: Alignment.topLeft,
                   end:Alignment.bottomRight,
-                  ),
-                  
                 ),
-              child:Row(
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/Salamacare logo.png',width: 50,height: 50,),
-                  const SizedBox(width: 10,),
+                  Image.asset('assets/images/Salamacare logo.png', width: 50, height: 50),
+                  const SizedBox(width: 10),
                   const Text('Salama care',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                    ),),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
                 ],
               )
-              ),
-
+            ),
             ListTile(
-              leading:  Icon(Icons.dashboard, color: Colors.blue.shade600,),
-              title:  Text('Appointments',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade800,
-              ),
+              leading: Icon(Icons.dashboard, color: Colors.blue.shade600),
+              title: Text('Appointments',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade800,
+                ),
               ),
               onTap: (){},
               horizontalTitleGap: 16,
@@ -117,17 +117,15 @@ class _DoctordashboardState extends State<Doctordashboard> {
               splashColor: Colors.blue.withOpacity(0.1),
               hoverColor: Colors.blue.withOpacity(0.05),
             ),
-
-            const SizedBox(height: 8,),
-
+            const SizedBox(height: 8),
             ListTile(
-              leading:Icon(Icons.people, color: Colors.blue.shade600,),
+              leading: Icon(Icons.people, color: Colors.blue.shade600),
               title: Text('patients',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade800,
-              ),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade800,
+                ),
               ),
               onTap: (){},
               horizontalTitleGap: 16,
@@ -135,118 +133,214 @@ class _DoctordashboardState extends State<Doctordashboard> {
               splashColor: Colors.blue.withOpacity(0.1),
               hoverColor: Colors.blue.withOpacity(0.05),
             ),
-
-            const SizedBox(height: 8,),
-
+            const SizedBox(height: 8),
             ListTile(
-              leading:  Icon(Icons.settings, color: Colors.blue.shade600,),
+              leading: Icon(Icons.settings, color: Colors.blue.shade600),
               title: Text('settings',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade800,
-              ),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade800,
+                ),
               ),
               onTap: (){},
               horizontalTitleGap: 16,
               tileColor: Colors.transparent,
               splashColor: Colors.blue.withOpacity(0.1),
               hoverColor: Colors.blue.withOpacity(0.05),
-
             ),
-
-            const SizedBox(height: 8,),
+            const SizedBox(height: 8),
             Divider(color: Colors.grey.shade300, height: 1),
-
             ListTile(
-        leading: const Icon(Icons.logout, color: Colors.red),
-        title: const Text(
-          'Log out',
-          style: TextStyle(
-            color: Colors.red,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onTap: () {
-          Navigator.pushReplacement(context, 
-          MaterialPageRoute(builder: (context)=> const Loginscreen()),
-          );
-        },
-        horizontalTitleGap: 16,
-        tileColor: Colors.transparent,
-        splashColor: Colors.red.withOpacity(0.1),
-        hoverColor: Colors.red.withOpacity(0.05),
-      ),
-
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text(
+                'Log out',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () {
+                Navigator.pushReplacement(context, 
+                  MaterialPageRoute(builder: (context)=> const Loginscreen()),
+                );
+              },
+              horizontalTitleGap: 16,
+              tileColor: Colors.transparent,
+              splashColor: Colors.red.withOpacity(0.1),
+              hoverColor: Colors.red.withOpacity(0.05),
+            ),
           ],
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Today\'s appointments',
-               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-          
-              const SizedBox(height: 10,),
-          
-              //Appointments stat cards
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const statcard(
-                    title: 'Upcoming appointments', 
-                    color: Colors.amber, 
-                    count: '10', 
-                    icon: Icons.upcoming),
-          
-                    const statcard(
-                      title: 'Completed Appointments', 
-                      color: Colors.green, 
-                      count: '5', 
-                      icon: Icons.check_circle),
-          
-                   statcard(
-                    title:'missed Apointments', 
-                    color: Colors.orange.shade200, 
-                    count: '2', 
-                    icon: Icons.hourglass_empty)
-          
-          
-                ],
-              ),
-          
-              const SizedBox(height: 5,),
-          
-            //Appointments Table section
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Appointment details'),
-                TextButton(
-                  onPressed: (){}, 
-                  child:const Text('view all')),
-          
-              ],
-            ),  
-           Container(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height * 0.5
-            ),
-            child: const AppointmentTables(),
-            ),
-            ],
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 600) {
+              return _buildWideLayout();
+            } else {
+              return _buildNarrowLayout();
+            }
+          },
         ),
       ),
     );
   }
+
+ // First, update your _buildWideLayout() method to place the calendar next to the appointment tables
+Widget _buildWideLayout() {
+  return Column(
+    children: [
+      // Stats Cards at top (full width)
+      Column(
+        children: [
+          const Text('Today\'s appointments',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const statcard(
+                title: 'Upcoming appointments', 
+                color: Colors.amber, 
+                count: '10', 
+                icon: Icons.upcoming),
+              const statcard(
+                title: 'Completed Appointments', 
+                color: Colors.green, 
+                count: '5', 
+                icon: Icons.check_circle),
+              statcard(
+                title:'missed Apointments', 
+                color: Colors.orange.shade200, 
+                count: '2', 
+                icon: Icons.hourglass_empty),
+            ],
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      
+      // Calendar and Appointments side by side (in the main content area)
+      Expanded(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Calendar View on the left
+            Expanded(
+              flex: 2,
+              child: Card(
+                elevation: 2,
+                margin: const EdgeInsets.only(right: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: CalendarView(doctorId: _currentDoctorId ?? ''),
+                ),
+              ),
+            ),
+            
+            // Appointments Table on the right
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Appointment details',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      TextButton(
+                        onPressed: (){}, 
+                        child: const Text('view all')),
+                    ],
+                  ),
+                  const Expanded(child: AppointmentTables()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
+// Also fix the narrow layout to maintain consistency
+Widget _buildNarrowLayout() {
+  return Column(
+    children: [
+      // Stats Cards
+      Column(
+        children: [
+          const Text('Today\'s appointments',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const statcard(
+                title: 'Upcoming appointments', 
+                color: Colors.amber, 
+                count: '10', 
+                icon: Icons.upcoming),
+              const statcard(
+                title: 'Completed Appointments', 
+                color: Colors.green, 
+                count: '5', 
+                icon: Icons.check_circle),
+              statcard(
+                title:'missed Apointments', 
+                color: Colors.orange.shade200, 
+                count: '2', 
+                icon: Icons.hourglass_empty),
+            ],
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      
+      // Calendar View (in narrow layout, it's stacked vertically)
+      Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SizedBox(
+            height: 400,
+            child: CalendarView(doctorId: _currentDoctorId ?? ''),
+          ),
+        ),
+      ),
+      const SizedBox(height: 16),
+      
+      // Appointments Table
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Appointment details',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                TextButton(
+                  onPressed: (){}, 
+                  child: const Text('view all')),
+              ],
+            ),
+            const Expanded(child: AppointmentTables()),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+}
+
+// ... [Rest of your existing code for statcard, AppointmentTables, and PatientProfileScreen classes]
 
 class statcard extends StatelessWidget {
   final String title;
@@ -446,7 +540,7 @@ class AppointmentTables extends StatelessWidget {
                             backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           ),
-                          child: const Text('Reschedule', style: TextStyle(fontSize: 12)),
+                          child: const Text('Reschedule', style: TextStyle(fontSize: 12,color:Colors.white )),
                         ),
                         const SizedBox(width: 5),
                         ElevatedButton(
@@ -723,5 +817,3 @@ class PatientProfileScreen extends StatelessWidget {
     );
   }
 }
-    
-  
