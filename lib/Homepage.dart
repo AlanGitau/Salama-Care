@@ -86,6 +86,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<Map<String, String>> doctors = [
+        {
+          'imageUrl': 'assets/images/smiling doctor.jpg',
+          'name': 'Dr. Kevin Maina',
+          'speciality': 'Dentist',
+        },
+        {
+          'imageUrl': 'assets/images/devine doctor.jpg',
+          'name': 'Dr. faith wanjiru',
+          'speciality': 'Dermatologist',
+        },
+        {
+          'imageUrl': 'assets/images/doctor3.jpg',
+          'name': 'Dr. faith wanjiru',
+          'speciality': 'General doctor',
+        },
+        {
+          'imageUrl': 'assets/images/doctor4.jpg',
+          'name': 'Dr. faith wanjiru',
+          'speciality': 'Nutritionist',
+        },
+        {
+          'imageUrl': 'assets/images/doctor5.jpg',
+          'name': 'Dr. Ben Carson',
+          'speciality': 'General doctor',
+        },
+        {
+          'imageUrl': 'assets/images/doctor6.jpg',
+          'name': 'Dr. faith wanjiru',
+          'speciality': 'General doctor',
+        },
+      ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -297,57 +329,59 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
-                      child: Text(
-                        'Top Doctors',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4158D0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 220,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        children: const [
-                          Doctorcard(
-                            imageUrl: 'assets/images/smiling doctor.jpg',
-                            name: 'Dr. Kevin Maina',
-                            speciality: 'Dentist',
-                          ),
-                          // ... other doctor cards
-                          Doctorcard(
-                  imageUrl: 'assets/images/devine doctor.jpg',
-                  name: 'Dr. faith wanjiru',
-                  speciality: 'Dermatologist',
+                    Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+  child: Column(
+    children: [
+      // Section Header with See All button
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Top Specialists',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4158D0),
+              ),
+            ),
+            TextButton(
+              onPressed: () {/* Add see all logic */},
+              child: const Text(
+                'See All',
+                style: TextStyle(
+                  color: Color(0xFFC850C0),
+                  fontWeight: FontWeight.w600,
                 ),
-                Doctorcard(
-                  imageUrl: 'assets/images/doctor3.jpg',
-                  name: 'Dr. faith wanjiru',
-                  speciality: 'General doctor',
-                ),
-                Doctorcard(
-                  imageUrl: 'assets/images/doctor4.jpg',
-                  name: 'Dr. faith wanjiru',
-                  speciality: 'Nutritionist',
-                ),
-                Doctorcard(
-                  imageUrl: 'assets/images/doctor5.jpg',
-                  name: 'Dr. Ben Carson',
-                  speciality: 'General doctor',
-                ),
-                Doctorcard(
-                  imageUrl: 'assets/images/doctor6.jpg',
-                  name: 'Dr. faith wanjiru',
-                  speciality: 'General doctor',
-                ),
-                        ],
-                      ),
-                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5, // Adjusted for better card proportions
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+        ),
+        itemCount: doctors.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.only(bottom: 20),
+        itemBuilder: (context, index) {
+          return DoctorCard(
+            imageUrl: doctors[index]['imageUrl']!,
+            name: doctors[index]['name']!,
+            speciality: doctors[index]['speciality']!,
+          );
+        },
+      ),
+    ],
+  ),
+),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -383,6 +417,189 @@ class _HomeScreenState extends State<HomeScreen> {
       horizontalTitleGap: 16,
       splashColor: Colors.white.withOpacity(0.1),
       hoverColor: Colors.white.withOpacity(0.05),
+    );
+  }
+}
+
+//Doctor Cards
+
+class DoctorCard extends StatelessWidget {
+  // Existing properties remain the same
+  final String imageUrl;
+  final String name;
+  final String speciality;
+  final double rating;
+  final String experience;
+
+  const DoctorCard({
+    Key? key,
+    required this.imageUrl,
+    required this.name,
+    required this.speciality,
+    this.rating = 4.5,
+    this.experience = "5 years",
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            spreadRadius: 2,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Container with Gradient Overlay
+          Stack(
+            children: [
+              Container(
+                height: 190,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  image: DecorationImage(
+                    image: AssetImage(imageUrl),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              Container(
+                height: 120,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  /*gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.3),
+                    ],
+                  ),*/
+                ),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.star_rounded, 
+                              color: Color(0xFFFFCC70), 
+                              size: 18),
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4158D0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF4158D0),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            speciality,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFC850C0).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        experience,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFC850C0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      // Maintain existing booking logic
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4158D0),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
+                    icon: const Icon(Icons.calendar_month_rounded, size: 20),
+                    label: const Text(
+                      'Book Appointment',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
