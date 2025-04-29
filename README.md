@@ -2,20 +2,17 @@
 
 Salama Care is a cross-platform mobile healthcare application developed using Flutter and Firebase. It simplifies the process of booking and managing medical appointments for both patients and doctors.
 
-## Table of Contents
-About
+## 📚 Table of Contents
 
-Features
+- [📖 About](#-about)
+- [✨ Features](#-features)
+- [🚀 Getting Started](#-getting-started)
+- [🔧 Installation](#-installation)
+- [🧪 Usage](#-usage)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
 
-Getting Started
-
-Installation
-
-Usage
-
-Contributing
-
-License
+---
 
 ## About
 Salama Care is designed to streamline the appointment process in healthcare settings. It provides an intuitive interface for patients to schedule appointments and for doctors to manage their bookings and view patient histories.
