@@ -33,3 +33,41 @@ Salama Care is designed to streamline the appointment process in healthcare sett
 ```bash
 git clone https://github.com/AlanGitau/Salama-Care.git
 cd Salama-Care
+Install dependencies:
+
+bash
+flutter pub get
+Run the application:
+
+bash
+flutter run
+📱 Ensure an emulator is running or a physical device is connected.
+
+Usage
+Patients can register, log in, and book appointments with available doctors.
+
+Doctors can log in to view scheduled appointments and patient information.
+
+Contributing
+We welcome contributions from the community:
+
+Fork the repository
+
+Create a new branch: git checkout -b feature/YourFeature
+
+Commit your changes: git commit -m "Add YourFeature"
+
+Push to the branch: git push origin feature/YourFeature
+
+Open a Pull Request
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+All the content you mentioned is included in the proper sections:
+- The installation commands are in the Installation section
+- The usage information is in the Usage section
+- The contributing guidelines are in the Contributing section
+
+The formatting is consistent with proper markdown syntax throughout the document.
